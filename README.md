@@ -104,7 +104,7 @@ Najważniejsze dni (kamienie milowe): **16.10.2026** plan projektu, **11.12.2026
 
 ### Wykres Gantta
 
-![Wykres Gantta](gantt.png)
+![Wykres Gantta](https://app.icproject.com/7fb34a/project/0c6e50/gantt)
 
 ## Zadania
 
