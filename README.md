@@ -108,9 +108,9 @@ Najważniejsze dni (kamienie milowe): **16.10.2026** plan projektu, **11.12.2026
 
 ## Zadania
 
-Tablica zadań w GitHub Projects: *(tu wkleimy link)*
+Tablica zadań w GitHub Projects: (https://github.com/s9uu/zespolowy-system-restauracji/projects), zatytułowana **Backlog**
 
-Tablica jest publiczna. Ma kolumny: Do zrobienia, W trakcie i Zrobione. Każdy task należy do jednej user story, np. „US3: formularz zamówienia”.
+Tablica jest publiczna. Ma kolumny: Do zrobienia, W trakcie i Zrobione. Taski zostały podzielone na kategorie, odpowiednio zaetykietowane i opisane.
 
 ## Zespół i role
 
