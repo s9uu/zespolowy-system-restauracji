@@ -74,9 +74,9 @@ W MVP są:
 - logowanie z rolami: klient, pracownik, administrator,
 - konto klienta z listą jego zamówień.
 
-**Rozszerzenia**, jeśli starczy czasu: rezerwacja stolików, opinie i oceny dań, raport sprzedaży.
+**Rozszerzenia**, jeśli starczy czasu: płatność online przez Stripe (tryb testowy), raport sprzedaży.
 
-**Poza zakresem:** płatności przez internet, dostawa do domu, kody SMS przy logowaniu.
+**Poza zakresem:** dostawa do domu, kody SMS przy logowaniu.
 
 ## Harmonogram
 
@@ -88,7 +88,7 @@ Scrum, sprinty po 2 tygodnie, przegląd na koniec każdego sprintu.
 | Sprint 1 | 30.10–12.11.2026 | baza danych, menu, koszyk | 13.11.2026 |
 | Sprint 2 | 13.11–26.11.2026 | składanie zamówienia, panel kuchni | 27.11.2026 |
 | Sprint 3 | 27.11–10.12.2026 | logowanie i role, panel administratora | 11.12.2026 (gotowe MVP) |
-| Sprint 4 | 11.12.2026–07.01.2027 | rozszerzenie (rezerwacje albo opinie) i testy; przerwa świąteczna 23.12–06.01 | 08.01.2027 |
+| Sprint 4 | 11.12.2026–07.01.2027 | płatność online przez Stripe (tryb testowy) i testy; przerwa świąteczna 23.12–06.01 | 08.01.2027 |
 | Sprint 5 | 08.01–21.01.2027 | poprawki, dokumentacja, prezentacja | 22.01.2027 (oddanie) |
 
 Kamienie milowe: **16.10.2026** plan projektu, **11.12.2026** gotowe MVP, **22.01.2027** oddanie systemu.
@@ -103,6 +103,16 @@ Tablica zadań w GitHub Projects: (https://github.com/users/s9uu/projects/2), za
 
 Tablica jest publiczna. Ma kolumny: Do zrobienia, W trakcie i Zrobione. Taski zostały podzielone na kategorie, odpowiednio zaetykietowane i opisane.
 
+## Wykorzystanie AI
+
+Zgodnie z zasadami kursu oznaczamy, gdzie korzystamy z narzędzi AI.
+
+- **Narzędzia:** Claude (Anthropic), ChatGPT (OpenAI).
+- **Do czego:** pomoc przy planowaniu i porządkowaniu dokumentacji (opis produktu, user stories, harmonogram) oraz wsparcie przy pisaniu i sprawdzaniu kodu.
+- **Co robimy sami:** decyzje projektowe, podział pracy i ostateczną treść.
+
+Listę uzupełniamy, gdy AI pomaga w nowym obszarze.
+
 ## Zespół i role
 
 | Osoba | Rola w Scrumie | Część techniczna |
@@ -114,7 +124,7 @@ Tablica jest publiczna. Ma kolumny: Do zrobienia, W trakcie i Zrobione. Taski zo
 
 ## Technologia
 
-- C#
-- ASP.NET Core
-- SQLite
-- podział na frontend i backend
+- backend: ASP.NET Core Web API
+- frontend: Blazor WebAssembly
+- baza danych: SQLite przez Entity Framework Core
+- wszystko w C#, dwie osobne aplikacje w jednym rozwiązaniu
