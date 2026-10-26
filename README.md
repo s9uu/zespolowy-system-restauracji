@@ -55,7 +55,7 @@ Co zyskuje każdy użytkownik:
 | US4 | Jako klient chcę sprawdzać status zamówienia, aby przyjść po nie, gdy będzie gotowe. | WB3 | 2 |
 | US5 | Jako klient chcę założyć konto i się logować, aby widzieć historię swoich zamówień. | WB4 | 3 |
 | US6 | Jako pracownik kuchni chcę widzieć aktywne zamówienia w kolejności złożenia, aby żadnego nie pominąć. | WB1 | 2 |
-| US7 | Jako pracownik kuchni chcę jednym kliknięciem zmieniać status zamówienia, aby klient wiedział, na jakim etapie jest jego jedzenie. | WB3 | 2 |
+| US7 | Jako pracownik kuchni chcę jednym kliknięciem zmieniać status zamówienia, a przy wydaniu oznaczać je jako opłacone, aby klient wiedział, na jakim etapie jest jego jedzenie, a restauracja wiedziała, które zamówienia są rozliczone. | WB3, WB6 | 2 |
 | US8 | Jako właściciel chcę dodawać, edytować i usuwać dania oraz oznaczać je jako niedostępne, aby menu zgadzało się z tym, co kuchnia może przygotować. | WB5 | 3 |
 | US9 | Jako właściciel chcę, aby panele kuchni i administratora były dostępne tylko dla kont z odpowiednią rolą, aby klient nie mógł zmieniać zamówień ani menu. | WB7 | 3 |
 
