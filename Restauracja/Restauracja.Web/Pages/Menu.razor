@@ -1,0 +1,47 @@
+@page "/menu"
+@using Restauracja.Shared
+@inject HttpClient Http
+
+<PageTitle>Menu</PageTitle>
+
+<h1>Menu</h1>
+
+@if (dania == null)
+{
+    <p>Wczytywanie...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Danie</th>
+                <th>Kategoria</th>
+                <th>Cena</th>
+                <th>Dostępne</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var danie in dania)
+            {
+                <tr>
+                    <td>@danie.Nazwa</td>
+                    <td>@danie.Kategoria</td>
+                    <td>@danie.Cena.ToString("0.00") zł</td>
+                    <td>@(danie.Dostepne ? "tak" : "nie")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    // Lista dań z Api. Na początku null, bo dane jeszcze nie przyszły.
+    private List<DanieDto>? dania;
+
+    // Uruchamia się raz, gdy strona się otwiera: pobiera menu z Api.
+    protected override async Task OnInitializedAsync()
+    {
+        dania = await Http.GetFromJsonAsync<List<DanieDto>>("api/menu");
+    }
+}
