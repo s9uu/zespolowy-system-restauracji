@@ -6,8 +6,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// HttpClient pobiera dane z Api.
-// Adres Api jest w Restauracja.Api/Properties/launchSettings.json.
+// Adres Api z Restauracja.Api/Properties/launchSettings.json (profil https).
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri("https://localhost:7097/")

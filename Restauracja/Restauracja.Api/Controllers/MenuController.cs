@@ -3,14 +3,11 @@ using Restauracja.Shared;
 
 namespace Restauracja.Api.Controllers;
 
-// Kontroler menu: odpowiada pod adresem /api/menu.
 [ApiController]
 [Route("api/menu")]
 public class MenuController : ControllerBase
 {
-    // GET /api/menu: zwraca listę dań.
-    // Na razie dania są wpisane w kodzie.
-    // W Sprincie 1 przyjdą z bazy SQLite.
+    // Na razie dania są wpisane w kodzie, w Sprincie 1 przyjdą z bazy.
     [HttpGet]
     public List<DanieDto> PobierzMenu()
     {

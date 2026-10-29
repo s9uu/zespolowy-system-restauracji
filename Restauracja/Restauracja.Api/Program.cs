@@ -1,13 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// CORS: pozwalamy stronie Restauracja.Web pobierać dane z Api.
-// Bez tego przeglądarka zablokuje pobieranie, bo Web ma inny adres.
+// Web działa na innym porcie, więc bez CORS przeglądarka zablokuje mu dane z Api.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Web", policy =>
@@ -18,7 +14,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -26,7 +21,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Włączamy zasadę CORS "Web" z góry pliku.
 app.UseCors("Web");
 
 app.UseAuthorization();

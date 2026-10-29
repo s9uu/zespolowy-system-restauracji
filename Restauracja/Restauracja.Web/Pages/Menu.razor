@@ -36,10 +36,8 @@ else
 }
 
 @code {
-    // Lista dań z Api. Na początku null, bo dane jeszcze nie przyszły.
     private List<DanieDto>? dania;
 
-    // Uruchamia się raz, gdy strona się otwiera: pobiera menu z Api.
     protected override async Task OnInitializedAsync()
     {
         dania = await Http.GetFromJsonAsync<List<DanieDto>>("api/menu");
