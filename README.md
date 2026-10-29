@@ -94,7 +94,28 @@ Kamienie milowe: **16.10.2026** plan projektu, **11.12.2026** gotowe MVP, **22.0
 
 ### Wykres Gantta
 
-![Wykres Gantta](gantt.png)
+```mermaid
+gantt
+    title Harmonogram projektu
+    dateFormat YYYY-MM-DD
+    axisFormat %d.%m
+
+    section Sprinty
+    Sprint 0           : s0, 2026-10-16, 14d
+    Sprint 1           : s1, 2026-10-30, 14d
+    Sprint 2           : s2, 2026-11-13, 14d
+    Sprint 3           : s3, 2026-11-27, 14d
+    Sprint 4           : s4, 2026-12-11, 28d
+    Sprint 5           : s5, 2027-01-08, 14d
+
+    section Przerwa
+    Przerwa świąteczna : 2026-12-23, 15d
+
+    section Kamienie milowe
+    Plan projektu      : milestone, 2026-10-16, 0d
+    Gotowe MVP         : milestone, 2026-12-11, 0d
+    Oddanie systemu    : milestone, 2027-01-22, 0d
+```
 
 ## Zadania
 
