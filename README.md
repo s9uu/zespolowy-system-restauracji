@@ -148,3 +148,5 @@ Listę uzupełniamy, gdy AI pomaga w nowym obszarze.
 - frontend: Blazor WebAssembly
 - baza danych: SQLite przez Entity Framework Core
 - wszystko w C#, dwie osobne aplikacje w jednym rozwiązaniu
+- instrukcja instalacji i uruchomienia: [instalacja.md](instalacja.md)
+- model danych z diagramem ERD: [model-danych.md](model-danych.md)
