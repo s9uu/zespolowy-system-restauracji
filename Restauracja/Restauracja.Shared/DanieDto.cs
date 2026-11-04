@@ -7,4 +7,7 @@ public class DanieDto
     public string Kategoria { get; set; } = "";
     public decimal Cena { get; set; }
     public bool Dostepne { get; set; }
+    public string Opis { get; set; } = "";
+    public string ZdjecieUrl { get; set; } = "";
+    public string Porcja { get; set; } = "";
 }
