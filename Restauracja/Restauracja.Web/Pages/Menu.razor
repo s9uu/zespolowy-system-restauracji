@@ -1,45 +1,269 @@
+
 @page "/menu"
 @using Restauracja.Shared
+@using System.Globalization
+@using Restauracja.Web.Services
+@inject CartService Cart
 @inject HttpClient Http
+@inject NavigationManager Navigation
 
-<PageTitle>Menu</PageTitle>
+<PageTitle>Menu — Przy Stole</PageTitle>
 
-<h1>Menu</h1>
+<div class="site">
 
-@if (dania == null)
-{
-    <p>Wczytywanie...</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Danie</th>
-                <th>Kategoria</th>
-                <th>Cena</th>
-                <th>Dostępne</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var danie in dania)
+    @* GŁÓWNA ZAWARTOŚĆ *@
+    <main class="menu-main">
+
+        <section class="intro">
+            <div class="intro-row">
+                <div>
+                    <span class="eyebrow">ZASMAKUJ TRADYCJI</span>
+                    <h1>Na co masz dziś ochotę?</h1>
+                    <p>Odkryj nasze domowe dania przygotowywane ze świeżych składników.</p>
+                </div>
+
+                <div class="intro-actions">
+
+                    <div class="restaurant-status">
+                        <span>●</span>
+                        <div>
+                            <strong>Przygotowujemy na bieżąco</strong>
+                            <small>Z sercem i pasją</small>
+                        </div>
+                    </div>
+
+                    <button class="temporary-cart-button" @onclick="OpenCartPage">
+                        koszyk-tymczasowy
+                        <span class="cart-count">@LiczbaProduktow</span>
+                    </button>
+
+                </div>
+            </div>
+        </section>
+
+        @* KATEGORIE I WYSZUKIWARKA *@
+        <section class="filters">
+            <div class="category-list">
+                @foreach (var kategoria in Kategorie)
+                {
+                    <button class="category-button @(wybranaKategoria == kategoria ? "selected" : "")"
+                            @onclick="() => WybierzKategorie(kategoria)">
+                        @kategoria
+                    </button>
+                }
+            </div>
+
+            <div class="search">
+                <input type="text"
+                       placeholder="Szukaj dania..."
+                       @bind="fraza"
+                       @bind:event="oninput" />
+            </div>
+        </section>
+
+        @* LISTA DAŃ *@
+        <section class="menu-section" id="menu">
+
+            <div class="menu-heading">
+                <div>
+                    <h2>Nasze menu</h2>
+                </div>
+                <span>@FiltrowaneDania.Count() dań</span>
+            </div>
+
+            @if (IsLoading)
             {
-                <tr>
-                    <td>@danie.Nazwa</td>
-                    <td>@danie.Kategoria</td>
-                    <td>@danie.Cena.ToString("0.00") zł</td>
-                    <td>@(danie.Dostepne ? "tak" : "nie")</td>
-                </tr>
+                <p class="menu-message">Ładowanie menu...</p>
             }
-        </tbody>
-    </table>
-}
+            else if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <p class="menu-message error-message">@ErrorMessage</p>
+            }
+            else if (dania == null || !dania.Any())
+            {
+                <p class="menu-message">Aktualnie brak dostępnych dań.</p>
+            }
+            else
+            {
+                <div class="dish-grid">
+
+                    @foreach (var danie in FiltrowaneDania)
+                    {
+                        <article class="dish-card">
+
+                            <div class="dish-image">
+                                <img src="@danie.ZdjecieUrl"
+                                     alt="@danie.Nazwa" />
+
+                                <span class="dish-category">
+                                    @danie.Kategoria
+                                </span>
+
+                                @if (!danie.Dostepne)
+                                {
+                                    <div class="unavailable">
+                                        Chwilowo niedostępne
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="dish-content">
+
+                                <div class="dish-title">
+                                    <h3>@danie.Nazwa</h3>
+                                    <strong>@danie.Cena.ToString("0.00", kultura) zł</strong>
+                                </div>
+
+                                <p class="dish-description">
+                                    @danie.Opis
+                                </p>
+
+                                <div class="dish-footer">
+                                    <span class="dish-portion">
+                                        @danie.Porcja
+                                    </span>
+
+                                    <button class="add-button"
+                                            disabled="@(!danie.Dostepne)"
+                                            @onclick="() => DodajDoKoszyka(danie)">
+                                        @(danie.Dostepne ? "Dodaj do koszyka +" : "Niedostępne")
+                                    </button>
+                                </div>
+
+                            </div>
+                        </article>
+                    }
+
+                </div>
+            }
+
+        </section>
+
+    </main>
+
+    @* POWIADOMIENIE *@
+    @if (!string.IsNullOrEmpty(komunikat))
+    {
+        <div class="notice">
+            @komunikat
+            <button @onclick="() => komunikat = null">×</button>
+        </div>
+    }
+
+</div>
 
 @code {
+    private void OpenCartPage()
+    {
+        Navigation.NavigateTo("/cart");
+    }
+    
     private List<DanieDto>? dania;
+    private bool IsLoading = true;
+    private string ErrorMessage = "";
 
+    private List<string> Kategorie
+    {
+        get
+        {
+            if (dania == null)
+                return new List<string> { "Wszystkie" };
+
+            return new List<string> { "Wszystkie" }
+                .Concat(dania
+                    .Select(d => d.Kategoria)
+                    .Where(k => !string.IsNullOrWhiteSpace(k))
+                    .Distinct()
+                    .OrderBy(k => k))
+                .ToList();
+        }
+    }
+
+    private string wybranaKategoria = "Wszystkie";
+    private string fraza = "";
+
+    private bool bladLadowania = false;
+
+    private string? komunikat;
+
+    private readonly CultureInfo kultura =
+        CultureInfo.GetCultureInfo("pl-PL");
+
+    // Filtrowanie dań według kategorii i wyszukiwanej frazy.
+    private IEnumerable<DanieDto> FiltrowaneDania
+    {
+        get
+        {
+            if (dania == null)
+                return Enumerable.Empty<DanieDto>();
+
+            return dania.Where(d =>
+                (wybranaKategoria == "Wszystkie" ||
+                 d.Kategoria == wybranaKategoria) &&
+                (string.IsNullOrWhiteSpace(fraza) ||
+                 d.Nazwa.IndexOf(fraza, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 d.Opis.IndexOf(fraza, StringComparison.OrdinalIgnoreCase) >= 0));
+        }
+    }
+
+    // Liczba wszystkich sztuk w koszyku.
+    private int LiczbaProduktow => Cart.ItemCount;
+
+    // Łączna wartość koszyka.
+    private decimal SumaKoszyka
+    {
+        get
+        {
+            if (dania == null)
+                return 0;
+
+            return dania
+                .Where(d => Cart.Items.ContainsKey(d.Id))
+                .Sum(d => d.Cena * Cart.Items[d.Id]);
+        }
+    }
+
+    // Pobieranie menu z API.
     protected override async Task OnInitializedAsync()
+{
+    try
     {
         dania = await Http.GetFromJsonAsync<List<DanieDto>>("api/menu");
+
+        if (dania == null)
+            dania = new List<DanieDto>();
     }
+    catch (HttpRequestException)
+    {
+        ErrorMessage = "Nie udało się połączyć z serwerem. Spróbuj ponownie później.";
+    }
+    catch (System.Text.Json.JsonException)
+    {
+        ErrorMessage = "Otrzymano nieprawidłowe dane z serwera.";
+    }
+    catch (TaskCanceledException)
+    {
+        ErrorMessage = "Przekroczono czas oczekiwania na odpowiedź serwera.";
+    }
+    finally
+    {
+        IsLoading = false;
+    }
+}
+
+    private void WybierzKategorie(string kategoria)
+    {
+        wybranaKategoria = kategoria;
+    }
+
+    private void DodajDoKoszyka(DanieDto danie)
+    {
+        Cart.Add(danie);
+
+        if (danie.Dostepne)
+        {
+            komunikat = "Dodano " + danie.Nazwa + " do koszyka.";
+        }
+    }
+
 }

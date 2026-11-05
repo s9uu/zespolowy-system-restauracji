@@ -1,0 +1,198 @@
+﻿@page "/cart"
+@using Restauracja.Shared
+@using Restauracja.Web.Services
+@using System.Globalization
+@inject CartService CartState
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<PageTitle>Twój koszyk</PageTitle>
+
+<main class="cart-page">
+    <div class="page-shell">
+
+        <header class="intro">
+            <div class="intro-copy">
+                
+                <div class="title-row">
+                    <h1>Twój koszyk</h1>
+                    <span class="item-count">@CartState.ItemCount szt.</span>
+                </div>
+                <p class="description">
+                    Sprawdź wybrane dania i ilości, zanim przejdziesz dalej.
+                </p>
+            </div>
+        </header>
+
+        @if (dania == null)
+        {
+            <p>Wczytywanie koszyka...</p>
+        }
+        else
+        {
+            <div class="content-grid">
+
+                <section class="cart-column">
+                    <div class="cart-card">
+
+                        <div class="cart-card-header">
+                            <h2>Wybrane dania</h2>
+                            <p>@CartState.Items.Count pozycji · @CartState.ItemCount sztuk</p>
+                        </div>
+
+                        @if (CartState.Items.Count > 0)
+                        {
+                            <ul class="cart-list">
+                                @foreach (var item in CartState.Items)
+                                {
+                                    var danie = dania.FirstOrDefault(d => d.Id == item.Key);
+
+                                    if (danie != null)
+                                    {
+                                        <li class="cart-item" @key="item.Key">
+
+                                            <img class="dish-image"
+                                                 src="@danie.ZdjecieUrl"
+                                                 alt="@danie.Nazwa" />
+
+                                            <div class="dish-details">
+                                                <p class="dish-category">@danie.Kategoria</p>
+                                                <h3>@danie.Nazwa</h3>
+                                                <p class="unit-price">
+                                                    @FormatPrice(danie.Cena) / szt.
+                                                </p>
+                                            </div>
+
+                                            <div class="quantity-control">
+                                                <button type="button"
+                                                        @onclick="() => ChangeQuantity(danie.Id, -1)">
+                                                    −
+                                                </button>
+
+                                                <span>@item.Value</span>
+
+                                                <button type="button"
+                                                        @onclick="() => ChangeQuantity(danie.Id, 1)">
+                                                    +
+                                                </button>
+                                            </div>
+
+                                            <div class="item-total">
+                                                <p>
+                                                    @FormatPrice(danie.Cena * item.Value)
+                                                </p>
+
+                                                <button type="button"
+                                                        @onclick="() => RemoveItem(danie.Id)">
+                                                    Usuń
+                                                </button>
+                                            </div>
+
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <div class="empty-cart">
+                                <p>Twój koszyk jest pusty.</p>
+                                <span>Wróć do menu i wybierz coś pysznego.</span>
+                            </div>
+                        }
+
+                    </div>
+
+                    <button type="button"
+                            class="back-button"
+                            @onclick="ReturnToMenu">
+                        ← Wróć do menu
+                    </button>
+                </section>
+
+                <aside class="summary-column">
+                    <div class="summary-card">
+                        <h2>Podsumowanie</h2>
+
+                        <div class="summary-line">
+                            <p>Wybrane dania (@CartState.ItemCount szt.)</p>
+                            <span>@FormatPrice(OrderTotal)</span>
+                        </div>
+
+                        <div class="grand-total">
+                            <div>
+                                <p>Łącznie</p>
+                                <strong>@FormatPrice(OrderTotal)</strong>
+                            </div>
+                            <span>Ceny zawierają podatek VAT.</span>
+                        </div>
+
+                        <div class="checkout">
+                            <button type="button"
+                                    disabled="@(CartState.Items.Count == 0)"
+                                    @onclick="ProceedToCheckout">
+                                Przejdź do zamówienia →
+                            </button>
+
+                            <p>
+                                W kolejnym kroku uzupełnisz dane i sprawdzisz zamówienie.
+                            </p>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        }
+
+    </div>
+</main>
+
+@code {
+    private List<DanieDto>? dania;
+
+    private decimal OrderTotal
+    {
+        get
+        {
+            if (dania == null)
+                return 0;
+
+            return dania
+                .Where(d => CartState.Items.ContainsKey(d.Id))
+                .Sum(d => d.Cena * CartState.Items[d.Id]);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        dania = await Http.GetFromJsonAsync<List<DanieDto>>("api/menu");
+
+        if (dania == null)
+            dania = new List<DanieDto>();
+    }
+
+    private static string FormatPrice(decimal value)
+    {
+        return value.ToString("N2", CultureInfo.GetCultureInfo("pl-PL")) + " zł";
+    }
+
+    private void ChangeQuantity(int id, int change)
+    {
+        CartState.ChangeQuantity(id, change);
+    }
+
+    private void RemoveItem(int id)
+    {
+        CartState.Remove(id);
+    }
+
+    private void ReturnToMenu()
+    {
+        Navigation.NavigateTo("/menu");
+    }
+
+    private void ProceedToCheckout()
+    {
+        // Obsługę zamówienia dodamy w kolejnym etapie.
+    }
+}
