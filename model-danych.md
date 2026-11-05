@@ -21,7 +21,7 @@ Punkt wyjścia to słownik danych z naszego projektu z Inżynierii oprogramowani
 - Encje są w projekcie `Restauracja.Api`. Aplikacja Web ich nie widzi.
 - Enumy są w projekcie `Restauracja.Shared`, bo potrzebują ich i Api, i Web.
 - Web dostaje dane tylko jako DTO z `Restauracja.Shared`, np. `DanieDto` ma pole `Kategoria` z nazwą kategorii.
-- Koszyk nie ma tabeli. Klient trzyma go w aplikacji Web do chwili złożenia zamówienia. Klasa koszyka (dodawanie, ilość, kwota) jest w `Restauracja.Shared`. Api przy zapisie zamówienia i tak liczy kwotę od nowa z cen w bazie.
+- Koszyk nie ma tabeli. Klient trzyma go w aplikacji Web do chwili złożenia zamówienia. Koszyk obsługuje `CartService` w `Restauracja.Web`. Api przy zapisie zamówienia i tak liczy kwotę od nowa z cen w bazie.
 
 ## Diagram ERD
 
@@ -111,7 +111,7 @@ Jedno danie z menu, z ceną i dostępnością.
 | Opis | `string?` | Krótki opis, najwyżej 500 znaków. |
 | Cena | `decimal` | Cena w złotych. |
 | Porcja | `string?` | Np. „8 szt.” albo „400 ml”, najwyżej 30 znaków. Menu pokazuje ją tylko wtedy, gdy ją podano. |
-| ZdjecieUrl | `string?` | Adres zdjęcia, np. /img/zurek.jpg. Pliki zdjęć leżą w `Restauracja.Web/wwwroot`. |
+| ZdjecieUrl | `string?` | Adres zdjęcia, np. images/zurek.jpg. Pliki zdjęć leżą w `Restauracja.Web/wwwroot`. |
 | Dostepne | `bool` | Czy danie można teraz zamówić. Niedostępne widać w menu, ale przycisk „Dodaj do koszyka” jest wyłączony. |
 | Usuniete | `bool` | Usunięte danie znika z menu i z panelu, ale zostaje w bazie dla starych zamówień. |
 | KategoriaId | `int` | Klucz obcy do tabeli Kategoria. |
