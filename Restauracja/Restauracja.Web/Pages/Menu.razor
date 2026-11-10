@@ -22,22 +22,6 @@
                     <p>Odkryj nasze domowe dania przygotowywane ze świeżych składników.</p>
                 </div>
 
-                <div class="intro-actions">
-
-                    <div class="restaurant-status">
-                        <span>●</span>
-                        <div>
-                            <strong>Przygotowujemy na bieżąco</strong>
-                            <small>Z sercem i pasją</small>
-                        </div>
-                    </div>
-
-                    <button class="temporary-cart-button" @onclick="OpenCartPage">
-                        koszyk-tymczasowy
-                        <span class="cart-count">@LiczbaProduktow</span>
-                    </button>
-
-                </div>
             </div>
         </section>
 
@@ -93,7 +77,8 @@
 
                             <div class="dish-image">
                                 <img src="@danie.ZdjecieUrl"
-                                     alt="@danie.Nazwa" />
+                                     alt="@danie.Nazwa"
+                                     @onerror="() => HandleImageError(danie)" />
 
                                 <span class="dish-category">
                                     @danie.Kategoria
@@ -264,6 +249,11 @@
         {
             komunikat = "Dodano " + danie.Nazwa + " do koszyka.";
         }
+    }
+
+    private void HandleImageError(DanieDto danie)
+    {
+        danie.ZdjecieUrl = "images/placeholder.jpg";
     }
 
 }
