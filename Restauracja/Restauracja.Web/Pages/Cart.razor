@@ -60,7 +60,7 @@
                                         <li class="cart-item" @key="item.Key">
 
                                             <img class="dish-image"
-                                                 src="@danie.ZdjecieUrl"
+                                                 src="@GetImageUrl(danie)"
                                                  alt="@danie.Nazwa"
                                                  @onerror="() => HandleImageError(danie)" />
 
@@ -224,6 +224,14 @@
     private void ProceedToCheckout()
     {
         // Obsługę zamówienia dodamy w kolejnym etapie.
+    }
+
+    private string GetImageUrl(DanieDto danie)
+    {
+        if (string.IsNullOrWhiteSpace(danie.ZdjecieUrl))
+            return "images/placeholder.jpg";
+
+        return danie.ZdjecieUrl;
     }
 
     private void HandleImageError(DanieDto danie)

@@ -76,7 +76,7 @@
                         <article class="dish-card">
 
                             <div class="dish-image">
-                                <img src="@danie.ZdjecieUrl"
+                                <img src="@GetImageUrl(danie)"
                                      alt="@danie.Nazwa"
                                      @onerror="() => HandleImageError(danie)" />
 
@@ -158,8 +158,7 @@
                 .Concat(dania
                     .Select(d => d.Kategoria)
                     .Where(k => !string.IsNullOrWhiteSpace(k))
-                    .Distinct()
-                    .OrderBy(k => k))
+                    .Distinct())
                 .ToList();
         }
     }
@@ -249,6 +248,14 @@
         {
             komunikat = "Dodano " + danie.Nazwa + " do koszyka.";
         }
+    }
+
+    private string GetImageUrl(DanieDto danie)
+    {
+        if (string.IsNullOrWhiteSpace(danie.ZdjecieUrl))
+            return "images/placeholder.jpg";
+
+        return danie.ZdjecieUrl;
     }
 
     private void HandleImageError(DanieDto danie)
