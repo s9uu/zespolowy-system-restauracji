@@ -24,9 +24,17 @@
             </div>
         </header>
 
-        @if (dania == null)
+        @if (IsLoading)
         {
-            <p>Wczytywanie koszyka...</p>
+            <div class="cart-message">
+                Ładowanie koszyka...
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div class="cart-message error-message">
+                @ErrorMessage
+            </div>
         }
         else
         {
@@ -52,8 +60,9 @@
                                         <li class="cart-item" @key="item.Key">
 
                                             <img class="dish-image"
-                                                 src="@danie.ZdjecieUrl"
-                                                 alt="@danie.Nazwa" />
+                                                 src="@GetImageUrl(danie)"
+                                                 alt="@danie.Nazwa"
+                                                 @onerror="() => HandleImageError(danie)" />
 
                                             <div class="dish-details">
                                                 <p class="dish-category">@danie.Kategoria</p>
@@ -149,6 +158,8 @@
 
 @code {
     private List<DanieDto>? dania;
+    private bool IsLoading = true;
+    private string ErrorMessage = "";
 
     private decimal OrderTotal
     {
@@ -165,10 +176,29 @@
 
     protected override async Task OnInitializedAsync()
     {
-        dania = await Http.GetFromJsonAsync<List<DanieDto>>("api/menu");
+        try
+        {
+            dania = await Http.GetFromJsonAsync<List<DanieDto>>("api/menu");
 
-        if (dania == null)
-            dania = new List<DanieDto>();
+            if (dania == null)
+                ErrorMessage = "Serwer zwrócił pustą odpowiedź.";
+        }
+        catch (HttpRequestException)
+        {
+            ErrorMessage = "Nie udało się połączyć z serwerem. Spróbuj ponownie później.";
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            ErrorMessage = "Otrzymano nieprawidłowe dane z serwera.";
+        }
+        catch (TaskCanceledException)
+        {
+            ErrorMessage = "Przekroczono czas oczekiwania na odpowiedź serwera.";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     private static string FormatPrice(decimal value)
@@ -194,5 +224,18 @@
     private void ProceedToCheckout()
     {
         // Obsługę zamówienia dodamy w kolejnym etapie.
+    }
+
+    private string GetImageUrl(DanieDto danie)
+    {
+        if (string.IsNullOrWhiteSpace(danie.ZdjecieUrl))
+            return "images/placeholder.jpg";
+
+        return danie.ZdjecieUrl;
+    }
+
+    private void HandleImageError(DanieDto danie)
+    {
+        danie.ZdjecieUrl = "images/placeholder.jpg";
     }
 }
