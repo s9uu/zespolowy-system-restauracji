@@ -5,14 +5,37 @@ Accept: application/json
 
 ###
 
-# Kod małymi literami też działa.
-GET {{Restauracja.Api_HostAddress}}/api/zamowienia/k7f2qx
-Accept: application/json
+# Złożenie zamówienia. SposobOdbioru: 0 = na miejscu, 1 = na wynos.
+# Żurek dwa razy osobno: Api połączy go w jedną pozycję (3 szt.).
+POST {{Restauracja.Api_HostAddress}}/api/zamowienia
+Content-Type: application/json
+
+{
+  "imieKlienta": "Anna",
+  "sposobOdbioru": 0,
+  "pozycje": [
+    { "danieId": 1, "ilosc": 2 },
+    { "danieId": 8, "ilosc": 1 },
+    { "danieId": 1, "ilosc": 1 }
+  ]
+}
 
 ###
 
-# Nieistniejący kod: 404.
-GET {{Restauracja.Api_HostAddress}}/api/zamowienia/XXXXXX
+# Sernik (id 3) jest niedostępny: 400 z nazwą dania.
+POST {{Restauracja.Api_HostAddress}}/api/zamowienia
+Content-Type: application/json
+
+{
+  "imieKlienta": "Tomek",
+  "sposobOdbioru": 1,
+  "pozycje": [ { "danieId": 3, "ilosc": 1 } ]
+}
+
+###
+
+# Wpisz kod zwrócony przez POST. Małe litery też działają.
+GET {{Restauracja.Api_HostAddress}}/api/zamowienia/ABC234
 Accept: application/json
 
 ###
