@@ -7,7 +7,6 @@
     --accent-dark: #913b25;
     --border: #e7e1d8;
     --muted: #777268;
-    min-height: 100vh;
     background: #faf8f4;
     color: #292720;
     font-family: "Inter", Arial, sans-serif;
@@ -93,34 +92,6 @@
     font-size: 11px;
     font-weight: 600;
 }
-
-.restaurant-status {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-    .restaurant-status > span {
-        color: #63704a;
-        font-size: 13px;
-    }
-
-    .restaurant-status > div {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .restaurant-status strong {
-        font-size: 13px;
-        font-weight: 500;
-    }
-
-    .restaurant-status small {
-        color: var(--muted);
-        font-size: 12px;
-    }
 
 /* =========================
    FILTRY I WYSZUKIWARKA
