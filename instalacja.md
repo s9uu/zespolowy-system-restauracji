@@ -32,7 +32,7 @@ SQLite nie instalujemy osobno, bo baza to jeden plik, a jej obsługę dodajemy d
 2. Otwórz plik Restauracja.sln z folderu Restauracja.
 3. U góry, na lewo od zielonej strzałki, jest lista z napisem „Restauracja.Api” – wybierz z niej profil „Api + Web”, który uruchamia Api i Web naraz, i naciśnij F5. Jeśli tego profilu nie ma, ustaw go w Projekt → Konfiguruj projekty startowe (Api i Web: Uruchom, https).
 4. Przy pierwszym uruchomieniu mogą pojawić się dwa okna z pytaniem o certyfikat – w obu klikamy „Tak”.
-5. W przeglądarce kliknij Menu w bocznym pasku – powinna się pokazać tabela z trzema daniami.
+5. W przeglądarce od razu widać menu z daniami.
 6. Czarnych okien konsoli nie zamykamy, bo to działające Api i Web. Aplikację zatrzymujemy w Visual Studio klawiszami Shift+F5.
 
 Jeśli przy projektach jest dopisek „(zwolniony)”, kliknij je prawym przyciskiem i wybierz „Załaduj ponownie projekt”.
