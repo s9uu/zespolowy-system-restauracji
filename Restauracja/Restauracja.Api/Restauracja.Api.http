@@ -1,6 +1,23 @@
-@Restauracja.Api_HostAddress = http://localhost:5260
+@Restauracja.Api_HostAddress = https://localhost:7097
 
-GET {{Restauracja.Api_HostAddress}}/weatherforecast/
+GET {{Restauracja.Api_HostAddress}}/api/menu
+Accept: application/json
+
+###
+
+# Kod małymi literami też działa.
+GET {{Restauracja.Api_HostAddress}}/api/zamowienia/k7f2qx
+Accept: application/json
+
+###
+
+# Nieistniejący kod: 404.
+GET {{Restauracja.Api_HostAddress}}/api/zamowienia/XXXXXX
+Accept: application/json
+
+###
+
+GET {{Restauracja.Api_HostAddress}}/api/kuchnia/zamowienia
 Accept: application/json
 
 ###
