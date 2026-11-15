@@ -3,7 +3,10 @@ using Restauracja.Api.Baza;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+// Bez tego puste imię zatrzymałaby automatyczna walidacja z angielskim komunikatem,
+// a chcemy, żeby sprawdzał je ZamowieniaController i zwracał komunikat po polsku.
+builder.Services.AddControllers(options =>
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<RestauracjaDbContext>(options =>
