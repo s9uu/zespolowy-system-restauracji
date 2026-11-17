@@ -1,4 +1,3 @@
-
 @page "/menu"
 @using Restauracja.Shared
 @using System.Globalization
@@ -173,7 +172,7 @@
     private readonly CultureInfo kultura =
         CultureInfo.GetCultureInfo("pl-PL");
 
-    // Filtrowanie dań według kategorii i wyszukiwanej frazy.
+    // FILTROWANIE DAŃ
     private IEnumerable<DanieDto> FiltrowaneDania
     {
         get
@@ -190,10 +189,10 @@
         }
     }
 
-    // Liczba wszystkich sztuk w koszyku.
+    // LICZBA WSZYSTKICH SZTUK W KOSZYKU
     private int LiczbaProduktow => Cart.ItemCount;
 
-    // Łączna wartość koszyka.
+    // ŁĄCZNA WARTOŚĆ KOSZYKA
     private decimal SumaKoszyka
     {
         get
@@ -207,7 +206,7 @@
         }
     }
 
-    // Pobieranie menu z API.
+    // POBIERANIE MENU Z API
     protected override async Task OnInitializedAsync()
 {
     try

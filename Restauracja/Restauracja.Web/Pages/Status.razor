@@ -1,0 +1,327 @@
+﻿@page "/status"
+@page "/status/{Kod}"
+
+@using System.Net
+@using System.Net.Http.Json
+@using Restauracja.Shared
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<PageTitle>Status zamówienia</PageTitle>
+
+<main class="page-shell">
+    <section class="confirmation">
+        <header class="introduction">
+            <div class="title-group">
+                <h1>Potwierdzenie i status zamówienia</h1>
+
+                <p class="lead">
+                    Sprawdź, na jakim etapie realizacji jest Twoje zamówienie.
+                </p>
+            </div>
+        </header>
+
+        <article class="status-card">
+
+            @if (string.IsNullOrWhiteSpace(Kod))
+            {
+                <div class="search-section">
+                    <h2>Sprawdź swoje zamówienie</h2>
+                    <p>Wpisz kod zamówienia otrzymany po jego złożeniu.</p>
+
+                    <form @onsubmit="SearchOrderAsync"
+                          @onsubmit:preventDefault>
+                        <input type="text"
+                               @bind="SearchCode"
+                               placeholder="Np. K7F2QX"
+                               maxlength="6" />
+
+                        <button type="submit"
+                                disabled="@string.IsNullOrWhiteSpace(SearchCode)">
+                            Wyszukaj zamówienie
+                        </button>
+                    </form>
+
+                    @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                    {
+                        <p class="error-message" role="alert">
+                            @ErrorMessage
+                        </p>
+                    }
+                </div>
+            }
+            else if (IsLoading)
+            {
+                <div class="loading">
+                    <span></span>
+                    <p>Ładowanie zamówienia...</p>
+                </div>
+            }
+            else if (Order != null)
+            {
+                <div class="order-status-header">
+                    <div class="order-identification">
+                        <div class="order-number">
+                            <span>Kod zamówienia</span>
+                            <strong>#@Order.Kod</strong>
+                        </div>
+
+                        <p>
+                            Zachowaj ten kod i podaj go przy odbiorze.
+                        </p>
+                    </div>
+
+                    <div class="current-status">
+                        <span>Aktualny status</span>
+
+                        <div class="status-actions">
+                            <div class="status-pill" aria-live="polite">
+                                <strong>@Nazwy.PoPolsku(Order.Status)</strong>
+                            </div>
+
+                            <button class="refresh-button"
+                                    type="button"
+                                    @onclick="RefreshStatusAsync"
+                                    disabled="@IsRefreshing">
+                                <span>
+                                    @(IsRefreshing ? "Sprawdzam..." : "Odśwież")
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <ol class="order-progress" aria-label="Etapy realizacji zamówienia">
+                    @for (var index = 0; index < Steps.Length; index++)
+                    {
+                        var stepIndex = index;
+                        var stateClass = stepIndex < (int)Order.Status
+                        ? "complete"
+                        : stepIndex == (int)Order.Status
+                        ? "active"
+                        : "";
+
+                        <li class="@stateClass"
+                            aria-current="@(stepIndex == (int)Order.Status ? "step" : null)">
+
+                            <div class="progress-axis">
+                                <span class="step-number">@(stepIndex + 1)</span>
+
+                                @if (stepIndex < Steps.Length - 1)
+                                {
+                                    <span class="connector"></span>
+                                }
+                            </div>
+
+                            <strong>@Steps[stepIndex].Name</strong>
+                            <p>@Steps[stepIndex].Description</p>
+                        </li>
+                    }
+                </ol>
+
+                @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                {
+                    <p class="error-message" role="alert">
+                        @ErrorMessage
+                    </p>
+                }
+            }
+            else
+            {
+                <div class="not-found">
+                    <h2>Nie znaleziono zamówienia</h2>
+                    <p>@ErrorMessage</p>
+
+                    <button type="button" @onclick="BackToSearch">
+                        Wyszukaj ponownie
+                    </button>
+                </div>
+            }
+        </article>
+    </section>
+
+    @if (Order != null)
+    {
+        <section class="order-details" aria-label="Szczegóły zamówienia">
+
+            <article class="order-summary">
+                <header class="summary-header">
+                    <h2>Twoje zamówienie</h2>
+                    <span>
+                        @Order.Pozycje.Count pozycji ·
+                        @Order.Pozycje.Sum(p => p.Ilosc) sztuk
+                    </span>
+                </header>
+
+                <div class="order-lines">
+                    @foreach (var item in Order.Pozycje)
+                    {
+                        <div class="order-line">
+                            <div class="dish-details">
+                                <strong>@item.NazwaDania</strong>
+                            </div>
+
+                            <span class="quantity">
+                                @item.Ilosc szt.
+                            </span>
+
+                            <strong class="line-price">
+                                @FormatPrice(item.CenaDania * item.Ilosc)
+                            </strong>
+                        </div>
+                    }
+            </div>
+
+            <footer class="total">
+                <strong>Razem</strong>
+                <strong>@FormatPrice(Order.Kwota)</strong>
+            </footer>
+        </article>
+
+        <aside class="pickup-column">
+            <div class="payment-card">
+                <div class="order-method">
+                    <span>Sposób odbioru</span>
+                    <strong>
+                        @Nazwy.PoPolsku(Order.SposobOdbioru)
+                    </strong>
+                    <p>
+                        @(Order.SposobOdbioru == SposobOdbioru.NaMiejscu
+                                                ? "Zjesz w restauracji."
+                                                : "Odbierzesz zamówienie na wynos.")
+                    </p>
+                </div>
+
+                    <div class="payment-details">
+                        <h2>Płatność przy odbiorze</h2>
+                        <p>
+                            Zapłacisz gotówką lub kartą w restauracji.
+                        </p>
+
+                        <div class="amount">
+                            <span>Do zapłaty</span>
+                            <strong>@FormatPrice(Order.Kwota)</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <a class="back-link" href="/menu">
+                    Wróć do menu
+                </a>
+            </aside>
+        </section>
+        }
+</main>
+
+@code {
+    [Parameter]
+    public string? Kod { get; set; }
+
+    private string SearchCode { get; set; } = "";
+
+    private ZamowienieDto? Order { get; set; }
+
+    private bool IsLoading { get; set; }
+    private bool IsRefreshing { get; set; }
+
+    private string ErrorMessage { get; set; } = "";
+
+    private readonly (string Name, string Description)[] Steps =
+    {
+        ("Nowe", "Zamówienie przyjęte"),
+        ("W przygotowaniu", "Kuchnia przygotowuje Twoje dania"),
+        ("Gotowe", "Dania są gotowe do odbioru"),
+        ("Wydane", "Zamówienie zostało odebrane")
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Kod))
+        {
+            await LoadOrderAsync();
+        }
+        else
+        {
+            Order = null;
+            ErrorMessage = "";
+        }
+    }
+
+    private async Task SearchOrderAsync()
+    {
+        if (string.IsNullOrWhiteSpace(SearchCode))
+            return;
+
+        string code = SearchCode.Trim().ToUpper();
+
+        Navigation.NavigateTo($"/status/{Uri.EscapeDataString(code)}");
+    }
+
+    private async Task RefreshStatusAsync()
+    {
+        await LoadOrderAsync(true);
+    }
+
+    private async Task LoadOrderAsync(bool refreshing = false)
+    {
+        if (string.IsNullOrWhiteSpace(Kod))
+            return;
+
+        if (refreshing)
+            IsRefreshing = true;
+        else
+            IsLoading = true;
+
+        ErrorMessage = "";
+
+        try
+        {
+            var response = await Http.GetAsync(
+                $"api/zamowienia/{Uri.EscapeDataString(Kod)}");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                Order = null;
+                ErrorMessage = "Nie znaleziono zamówienia o podanym kodzie.";
+                return;
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ErrorMessage = "Nie udało się pobrać zamówienia. Spróbuj ponownie.";
+                return;
+            }
+
+            Order = await response.Content.ReadFromJsonAsync<ZamowienieDto>();
+
+            if (Order == null)
+            {
+                ErrorMessage = "Nie udało się odczytać danych zamówienia.";
+            }
+        }
+        catch (HttpRequestException)
+        {
+            ErrorMessage = "Nie można połączyć się z serwerem. Spróbuj ponownie później.";
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Wystąpił nieoczekiwany błąd podczas pobierania zamówienia.";
+        }
+        finally
+        {
+            IsLoading = false;
+            IsRefreshing = false;
+        }
+    }
+
+    private void BackToSearch()
+    {
+        SearchCode = "";
+        Navigation.NavigateTo("/status");
+    }
+
+    private string FormatPrice(decimal price)
+    {
+        return price.ToString("0.00") + " zł";
+    }
+}

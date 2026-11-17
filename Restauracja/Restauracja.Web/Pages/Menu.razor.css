@@ -1,6 +1,4 @@
-﻿/* =========================
-   PODSTAWOWE USTAWIENIA
-   ========================= */
+﻿/* PODSTAWOWE USTAWIENIA */
 
 .site {
     --accent: #a7462c;
@@ -43,9 +41,7 @@
             outline-offset: 3px;
         }
 
-/* =========================
-   GŁÓWNA ZAWARTOŚĆ
-   ========================= */
+/* GŁÓWNA ZAWARTOŚĆ */
 
 .menu-main {
     width: 100%;
@@ -93,9 +89,7 @@
     font-weight: 600;
 }
 
-/* =========================
-   FILTRY I WYSZUKIWARKA
-   ========================= */
+/* FILTRY I WYSZUKIWARKA */
 
 .filters {
     display: flex;
@@ -165,9 +159,7 @@
             color: var(--muted);
         }
 
-/* =========================
-   KARTY DAŃ
-   ========================= */
+/* KARTY DAŃ */
 
 .menu-section {
     margin-top: 32px;
@@ -334,9 +326,7 @@
         color: #918b81;
     }
 
-/* =========================
-   KOMUNIKATY I ŁADOWANIE
-   ========================= */
+/* KOMUNIKATY I ŁADOWANIE */
 
 .menu-main .empty-results {
     border: 1px solid var(--border);
@@ -380,9 +370,7 @@
         font-size: 18px;
     }
 
-/* =========================
-   KOSZYK
-   ========================= */
+/* KOSZYK */
 
 .cart-overlay {
     position: fixed;
@@ -536,9 +524,7 @@
             background: var(--accent-dark);
         }
 
-/* =========================
-   POWIADOMIENIA
-   ========================= */
+/* POWIADOMIENIA */
 
 .menu-message {
     width: 100%;
@@ -552,9 +538,7 @@
     color: #c0392b;
 }
 
-/* =========================
-   RESPONSYWNOŚĆ
-   ========================= */
+/* RESPONSYWNOŚĆ */
 
 @media (max-width: 1100px) {
     .filters {
