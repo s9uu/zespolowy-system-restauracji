@@ -23,7 +23,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Dzięki temu każdy dostaje aktualną bazę po F5, bez ręcznych poleceń.
+// migracje same przy starcie, po F5 baza aktualna
 using (var scope = app.Services.CreateScope())
 {
     var baza = scope.ServiceProvider.GetRequiredService<RestauracjaDbContext>();

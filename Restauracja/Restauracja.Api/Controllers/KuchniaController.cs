@@ -42,4 +42,48 @@ public class KuchniaController : ControllerBase
             })
             .ToList();
     }
+
+    // status jako tekst, bo przy enumie w adresie zły status dostałby angielski błąd
+    [HttpPut("{kod}/status/{nowyStatus}")]
+    public IActionResult ZmienStatus(string kod, string nowyStatus)
+    {
+        // kody w bazie są wielkimi literami
+        var kodWielkimi = kod.ToUpperInvariant();
+        var zamowienie = baza.Zamowienia.FirstOrDefault(z => z.Kod == kodWielkimi);
+
+        if (zamowienie == null)
+            return NotFound("Nie ma takiego zamówienia.");
+
+        if (!Enum.TryParse<StatusZamowienia>(nowyStatus, true, out var status) || !Enum.IsDefined(status))
+            return BadRequest("Nie ma takiego statusu.");
+
+        // tylko o jeden krok, dwa kliknięcia naraz nie przeskoczą statusu
+        if (status != zamowienie.Status + 1)
+            return Conflict("Status zamówienia już się zmienił. Odśwież listę.");
+
+        // wydane dopiero po opłaceniu
+        if (status == StatusZamowienia.Wydane && !zamowienie.Oplacone)
+            return Conflict("Najpierw oznacz zamówienie jako opłacone.");
+
+        zamowienie.Status = status;
+        baza.SaveChanges();
+
+        return NoContent();
+    }
+
+    [HttpPut("{kod}/oplacone")]
+    public IActionResult OznaczOplacone(string kod)
+    {
+        var kodWielkimi = kod.ToUpperInvariant();
+        var zamowienie = baza.Zamowienia.FirstOrDefault(z => z.Kod == kodWielkimi);
+
+        if (zamowienie == null)
+            return NotFound("Nie ma takiego zamówienia.");
+
+        // drugie kliknięcie nic nie psuje, dalej true
+        zamowienie.Oplacone = true;
+        baza.SaveChanges();
+
+        return NoContent();
+    }
 }
