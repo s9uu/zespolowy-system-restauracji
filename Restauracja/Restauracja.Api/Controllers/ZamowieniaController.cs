@@ -68,7 +68,7 @@ public class ZamowieniaController : ControllerBase
             if (!danie.Dostepne)
                 return BadRequest($"Danie „{danie.Nazwa}” jest chwilowo niedostępne. Usuń je z koszyka.");
 
-            // Cenę bierzemy z bazy, a nie od klienta, i kopiujemy ją, żeby późniejsza zmiana menu nie zmieniła zamówienia.
+            // Cenę bierzemy z bazy i kopiujemy ją, żeby późniejsza zmiana menu nie zmieniła zamówienia.
             zamowienie.Pozycje.Add(new PozycjaZamowienia
             {
                 DanieId = danie.Id,
@@ -118,7 +118,7 @@ public class ZamowieniaController : ControllerBase
         return kod;
     }
 
-    // Bez imienia i pola „opłacone”, bo to widzi klient.
+    // Bez imienia i pola "opłacone", bo to widzi klient.
     private static ZamowienieDto NaDto(Zamowienie zamowienie)
     {
         return new ZamowienieDto
