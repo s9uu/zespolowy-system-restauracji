@@ -79,18 +79,19 @@ W MVP są:
 
 ## Harmonogram
 
-Scrum, sprinty po 2 tygodnie, przegląd na koniec każdego sprintu.
+Scrum, sprinty tygodniowe od 16.11, przegląd na koniec każdego sprintu.
 
 | Faza | Termin | Co powstaje | Przegląd |
 |---|---|---|---|
 | Sprint 0 | 16.10–29.10.2026 | opis produktu, lista user stories, repozytorium, makiety ekranów | 30.10.2026 |
-| Sprint 1 | 30.10–12.11.2026 | baza danych, menu, koszyk | 13.11.2026 |
-| Sprint 2 | 13.11–26.11.2026 | składanie zamówienia, panel kuchni | 27.11.2026 |
-| Sprint 3 | 27.11–10.12.2026 | logowanie i role, panel administratora | 11.12.2026 (gotowe MVP) |
-| Sprint 4 | 11.12.2026–07.01.2027 | płatność online przez Stripe (tryb testowy) i testy; przerwa świąteczna 23.12–06.01 | 08.01.2027 |
-| Sprint 5 | 08.01–21.01.2027 | poprawki, dokumentacja, prezentacja | 22.01.2027 (oddanie) |
+| Sprint 1 | 30.10–13.11.2026 | baza danych, menu, koszyk | 13.11.2026 |
+| Sprint 2 | 16.11–22.11.2026 | składanie zamówienia, status, panel kuchni | 23.11.2026 |
+| Sprint 3 | 23.11–29.11.2026 | logowanie i role, zarządzanie menu | 30.11.2026 |
+| Sprint 4 | 30.11–06.12.2026 | panele chronione rolami, konto klienta i historia zamówień | 07.12.2026 (gotowe MVP) |
+| Sprint 5 | 07.12–13.12.2026 | płatność online przez Stripe (tryb testowy), poprawki | 14.12.2026 |
+| Sprint 6 | 14.12–20.12.2026 | testy, dokumentacja, pitch deck | 21.12.2026 (oddanie) |
 
-Kamienie milowe: **16.10.2026** plan projektu, **11.12.2026** gotowe MVP, **22.01.2027** oddanie systemu.
+Kamienie milowe: **16.10.2026** plan projektu, **07.12.2026** gotowe MVP, **21.12.2026** oddanie systemu.
 
 ### Wykres Gantta
 
@@ -103,18 +104,17 @@ gantt
     section Sprinty
     Sprint 0           : s0, 2026-10-16, 14d
     Sprint 1           : s1, 2026-10-30, 14d
-    Sprint 2           : s2, 2026-11-13, 14d
-    Sprint 3           : s3, 2026-11-27, 14d
-    Sprint 4           : s4, 2026-12-11, 28d
-    Sprint 5           : s5, 2027-01-08, 14d
-
-    section Przerwa
-    Przerwa świąteczna : 2026-12-23, 15d
+    Sprint 2           : s2, 2026-11-16, 10d
+    Sprint 3           : s3, 2026-11-23, 7d
+    Sprint 4           : s4, 2026-11-30, 7d
+    Sprint 5           : s5, 2026-12-07, 7d
+    Sprint 6           : s6, 2026-12-14, 7d
+    Rezerwa            : r1, 2027-01-07, 19d
 
     section Kamienie milowe
     Plan projektu      : milestone, 2026-10-16, 0d
-    Gotowe MVP         : milestone, 2026-12-11, 0d
-    Oddanie systemu    : milestone, 2027-01-22, 0d
+    Gotowe MVP         : milestone, 2026-12-07, 0d
+    Oddanie systemu    : milestone, 2026-12-21, 0d
 ```
 
 ## Zadania
