@@ -1,7 +1,4 @@
-﻿
-/* ================================
-   PODSTAWOWE USTAWIENIA
-================================ */
+﻿/* PODSTAWOWE USTAWIENIA */
 
 .cart-page {
     background: #fbf9f6;
@@ -15,9 +12,7 @@
     padding: 48px 64px 80px;
 }
 
-/* ================================
-   NAGŁÓWEK
-================================ */
+/* NAGŁÓWEK */
 
 .intro {
     display: flex;
@@ -70,9 +65,7 @@
     line-height: 1.6;
 }
 
-/* ================================
-   GŁÓWNA ZAWARTOŚĆ
-================================ */
+/* GŁÓWNA ZAWARTOŚĆ */
 
 .content-grid {
     display: grid;
@@ -86,9 +79,7 @@
     min-width: 0;
 }
 
-/* ================================
-   KARTA KOSZYKA
-================================ */
+/* KARTA KOSZYKA */
 
 .cart-card,
 .summary-card {
@@ -125,9 +116,7 @@
         font-size: 13px;
     }
 
-/* ================================
-   POZYCJE KOSZYKA
-================================ */
+/* POZYCJE KOSZYKA */
 
 .cart-list {
     display: flex;
@@ -187,9 +176,7 @@
     font-size: 13px;
 }
 
-/* ================================
-   KONTROLKA ILOŚCI
-================================ */
+/* KONTROLKA ILOŚCI */
 
 .quantity-control {
     display: flex;
@@ -227,9 +214,7 @@
         font-weight: 600;
     }
 
-/* ================================
-   POZYCJI ŁĄCZNIE
-================================ */
+/* POZYCJI ŁĄCZNIE */
 
 .item-total {
     display: flex;
@@ -262,9 +247,7 @@
             text-decoration: underline;
         }
 
-/* ================================
-   PUSTY KOSZYK
-================================ */
+/* PUSTY KOSZYK */
 
 .empty-cart {
     padding: 48px 20px;
@@ -282,9 +265,7 @@
         font-size: 14px;
     }
 
-/* ================================
-   PRZYCISK POWROTU
-================================ */
+/* PRZYCISK POWROTU */
 
 .back-button {
     margin-top: 24px;
@@ -304,9 +285,7 @@
         background: #f5eee8;
     }
 
-/* ================================
-   PODSUMOWANIE
-================================ */
+/* PODSUMOWANIE */
 
 .summary-card {
     position: sticky;
@@ -339,9 +318,7 @@
         white-space: nowrap;
     }
 
-/* ================================
-   ŁĄCZNIE
-================================ */
+/* ŁĄCZNIE */
 
 .grand-total {
     padding: 22px 0;
@@ -374,9 +351,7 @@
         font-size: 12px;
     }
 
-/* ================================
-   PRZEJŚCIE DO PŁATNOŚCI
-================================ */
+/* PRZEJŚCIE DO PŁATNOŚCI */
 
 .checkout {
     padding-top: 20px;
@@ -414,9 +389,7 @@
         text-align: center;
     }
 
-/* ================================
-   OBSŁUGA BŁĘDÓW
-================================ */
+/* OBSŁUGA BŁĘDÓW */
 
 .cart-message {
     width: 100%;
@@ -429,9 +402,7 @@
     color: #c0392b;
 }
 
-/* ================================
-   RESPONSYWNOŚĆ
-================================ */
+/* RESPONSYWNOŚĆ */
 
 @media (max-width: 1023px) {
     .page-shell {

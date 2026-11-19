@@ -1,0 +1,388 @@
+﻿@page "/zamowienie"
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using System.Net.Http.Json
+@using System.Text.Json
+@using Restauracja.Shared
+@using Restauracja.Web.Services
+@inject CartService CartState
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<PageTitle>Składanie zamówienia</PageTitle>
+
+<div class="checkout-page">
+    <header class="page-header">
+        <div class="intro">
+            <h1>Składanie zamówienia</h1>
+            <p class="subtitle">
+                Sprawdź podsumowanie i wybierz, jak chcesz odebrać swoje zamówienie.
+            </p>
+        </div>
+    </header>
+
+    @if (IsLoading)
+    {
+        <div class="loading">Ładowanie podsumowania zamówienia...</div>
+    }
+    else if (!string.IsNullOrEmpty(LoadError))
+    {
+        <div class="order-error">@LoadError</div>
+        <button type="button" class="back-button" @onclick="ReturnToBasket">
+            ← Wróć do koszyka
+        </button>
+    }
+    else if (CartState.Items.Count == 0)
+    {
+        <div class="empty-basket card">
+            <h2>Twój koszyk jest pusty</h2>
+            <p>Dodaj dania do koszyka, zanim przejdziesz do składania zamówienia.</p>
+            <button type="button" class="submit-button" @onclick="ReturnToMenu">
+                Przejdź do menu
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="checkout-layout">
+            <section class="basket-column" aria-labelledby="basket-title">
+                <div class="basket card">
+                    <div class="basket-header">
+                        <h2 id="basket-title">Podsumowanie koszyka</h2>
+                        <span>
+                            @CartState.Items.Count
+                            @(CartState.Items.Count == 1 ? "pozycja" : "pozycji")
+                            · @CartState.ItemCount szt.
+                        </span>
+                    </div>
+
+                    @foreach (var entry in CartState.Items.ToList())
+                    {
+                        var dish = GetDish(entry.Key);
+
+                        if (dish != null)
+                        {
+                            <article class="basket-item">
+                                <img class="dish-image"
+                                     src="@GetImageUrl(dish)"
+                                     alt="@dish.Nazwa"
+                                     @onerror="() => HandleImageError(dish)" />
+
+                                <div class="dish-details">
+                                    <span class="dish-category">@dish.Kategoria</span>
+                                    <h3>@dish.Nazwa</h3>
+                                    <span class="unit-price">
+                                        @FormatPrice(dish.Cena) / szt.
+                                    </span>
+                                </div>
+
+                                <div class="quantity">
+                                    @entry.Value szt.
+                                </div>
+
+                                <strong class="line-price">
+                                    @FormatPrice(dish.Cena * entry.Value)
+                                </strong>
+                            </article>
+                        }
+                    }
+
+                    <div class="basket-total">
+                        <span>Wybrane dania (@CartState.ItemCount szt.)</span>
+                        <span>@FormatPrice(OrderTotal)</span>
+                    </div>
+                </div>
+
+                <button class="back-button" type="button" @onclick="ReturnToBasket">
+                    ← <span>Wróć do koszyka</span>
+                </button>
+            </section>
+
+            <aside class="details-column">
+                <section class="order-type card" aria-labelledby="order-type-title">
+                    <div class="section-heading">
+                        <h2 id="order-type-title">Jak zamawiasz?</h2>
+                        <p>Wybierz jedną z dwóch opcji.</p>
+                    </div>
+
+                    <div class="choice-grid" role="radiogroup" aria-label="Sposób odbioru">
+                        <button type="button"
+                                class="choice-card @(WybranySposob == SposobOdbioru.NaMiejscu ? "selected" : "")"
+                                role="radio"
+                                aria-checked="@(WybranySposob == SposobOdbioru.NaMiejscu)"
+                                @onclick="() => SelectOrderType(SposobOdbioru.NaMiejscu)">
+                            <span class="choice-title">
+                                <strong>Na miejscu</strong>
+                            </span>
+                            <span>Zjesz w restauracji</span>
+                        </button>
+
+                        <button type="button"
+                                class="choice-card @(WybranySposob == SposobOdbioru.NaWynos ? "selected" : "")"
+                                role="radio"
+                                aria-checked="@(WybranySposob == SposobOdbioru.NaWynos)"
+                                @onclick="() => SelectOrderType(SposobOdbioru.NaWynos)">
+                            <span class="choice-title">
+                                <strong>Na wynos</strong>
+                            </span>
+                            <span>Odbierzesz osobiście</span>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="payment card">
+                    <div class="payment-intro">
+                        <h2>Płatność przy odbiorze</h2>
+                        <p>Za zamówienie zapłacisz w restauracji podczas odbioru.</p>
+                    </div>
+
+
+                    <div class="payment-options">
+                        <h3>Sposób płatności</h3>
+
+                        <div class="choice-card selected">
+                            <span class="choice-title">
+                                <strong>Przy odbiorze</strong>
+                            </span>
+                            <span>Zapłacisz gotówką lub kartą w restauracji.</span>
+                        </div>
+
+                        <div class="choice-card payment-disabled" aria-disabled="true">
+                            <span class="choice-title">
+                                <strong>Płatność internetowa</strong>
+                                <span class="coming-soon">Wkrótce</span>
+                            </span>
+                            <span>Możliwość płatności online zostanie dodana w przyszłości.</span>
+                        </div>
+                    </div>
+
+
+                    <div class="amount">
+                        <div>
+                            <span>Do zapłaty</span>
+                            <span>@FormatPrice(OrderTotal)</span>
+                        </div>
+                    </div>
+
+                    <form class="order-form" @onsubmit="SubmitOrder" @onsubmit:preventDefault>
+                        <div class="customer-card">
+                            <h3>Imię do wywołania</h3>
+                            <p>Podaj imię, które posłuży do wywołania zamówienia przy odbiorze.</p>
+
+                            <label class="name-field">
+                                <span>Imię</span>
+                                <input type="text"
+                                       @bind="ImieKlienta"
+                                       maxlength="50"
+                                       placeholder="np. Jan" />
+                            </label>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(ErrorMessage))
+                        {
+                            <p class="validation-message" role="alert">@ErrorMessage</p>
+                        }
+
+                        <button class="submit-button"
+                                type="submit"
+                                disabled="@IsSubmitting">
+                            @(IsSubmitting ? "Wysyłanie..." : "Zatwierdź zamówienie")
+                        </button>
+
+                        <p class="submit-note">
+                            Po zatwierdzeniu przekażemy Twoje zamówienie do kuchni.
+                        </p>
+                    </form>
+                </section>
+            </aside>
+        </div>
+    }
+</div>
+
+@code {
+    private List<DanieDto> Dania = new List<DanieDto>();
+
+    private string ImieKlienta = "";
+    private SposobOdbioru? WybranySposob = null;
+
+    private bool IsLoading = true;
+    private bool IsSubmitting = false;
+
+    private string LoadError = "";
+    private string ErrorMessage = "";
+
+    private decimal OrderTotal
+    {
+        get
+        {
+            return CartState.Items.Sum(item =>
+            {
+                var dish = GetDish(item.Key);
+                return dish == null ? 0m : dish.Cena * item.Value;
+            });
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Dania = await Http.GetFromJsonAsync<List<DanieDto>>("api/menu")
+                    ?? new List<DanieDto>();
+        }
+        catch (HttpRequestException)
+        {
+            LoadError = "Nie udało się połączyć z serwerem. Spróbuj ponownie później.";
+        }
+        catch (JsonException)
+        {
+            LoadError = "Nie udało się odczytać danych menu.";
+        }
+        catch (TaskCanceledException)
+        {
+            LoadError = "Przekroczono czas oczekiwania na odpowiedź serwera.";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private DanieDto GetDish(int id)
+    {
+        return Dania.FirstOrDefault(d => d.Id == id);
+    }
+
+    private void SelectOrderType(SposobOdbioru sposob)
+    {
+        WybranySposob = sposob;
+        ErrorMessage = "";
+    }
+
+    private void ChangeQuantity(int id, int change)
+    {
+        CartState.ChangeQuantity(id, change);
+    }
+
+    private string GetImageUrl(DanieDto dish)
+    {
+        if (string.IsNullOrWhiteSpace(dish.ZdjecieUrl))
+            return "images/placeholder.jpg";
+
+        return dish.ZdjecieUrl;
+    }
+
+    private void HandleImageError(DanieDto dish)
+    {
+        dish.ZdjecieUrl = "images/placeholder.jpg";
+    }
+
+    private string FormatPrice(decimal price)
+    {
+        return price.ToString("0.00", System.Globalization.CultureInfo.GetCultureInfo("pl-PL")) + " zł";
+    }
+
+    private void ReturnToBasket()
+    {
+        Navigation.NavigateTo("/cart");
+    }
+
+    private void ReturnToMenu()
+    {
+        Navigation.NavigateTo("/menu");
+    }
+
+    private async Task SubmitOrder()
+    {
+        ErrorMessage = "";
+
+        if (string.IsNullOrWhiteSpace(ImieKlienta))
+        {
+            ErrorMessage = "Podaj imię.";
+            return;
+        }
+
+        ImieKlienta = ImieKlienta.Trim();
+
+        if (ImieKlienta.Length > 50)
+        {
+            ErrorMessage = "Imię może mieć najwyżej 50 znaków.";
+            return;
+        }
+
+        if (WybranySposob == null)
+        {
+            ErrorMessage = "Wybierz sposób odbioru.";
+            return;
+        }
+
+        if (CartState.Items.Count == 0)
+        {
+            ErrorMessage = "Koszyk jest pusty.";
+            return;
+        }
+
+        IsSubmitting = true;
+
+        try
+        {
+            var request = new NoweZamowienieDto
+            {
+                ImieKlienta = ImieKlienta,
+                SposobOdbioru = WybranySposob,
+                Pozycje = CartState.Items.Select(item => new PozycjaKoszykaDto
+                {
+                    DanieId = item.Key,
+                    Ilosc = item.Value
+                }).ToList()
+            };
+
+            var response = await Http.PostAsJsonAsync("api/zamowienia", request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseText = await response.Content.ReadAsStringAsync();
+
+                try
+                {
+                    ErrorMessage = JsonSerializer.Deserialize<string>(responseText)
+                                   ?? "Nie udało się złożyć zamówienia.";
+                }
+                catch (JsonException)
+                {
+                    ErrorMessage = "Nie udało się złożyć zamówienia. Spróbuj ponownie.";
+                }
+
+                return;
+            }
+
+            var zamowienie = await response.Content.ReadFromJsonAsync<ZamowienieDto>();
+
+            if (zamowienie == null || string.IsNullOrWhiteSpace(zamowienie.Kod))
+            {
+                ErrorMessage = "Serwer przyjął odpowiedź, ale nie zwrócił kodu zamówienia.";
+                return;
+            }
+
+            CartState.Clear();
+            Navigation.NavigateTo($"/status/{zamowienie.Kod}");
+        }
+        catch (HttpRequestException)
+        {
+            ErrorMessage = "Nie udało się połączyć z serwerem. Spróbuj ponownie.";
+        }
+        catch (JsonException)
+        {
+            ErrorMessage = "Otrzymano nieprawidłową odpowiedź serwera.";
+        }
+        catch (TaskCanceledException)
+        {
+            ErrorMessage = "Przekroczono czas oczekiwania na odpowiedź serwera.";
+        }
+        finally
+        {
+            IsSubmitting = false;
+        }
+    }
+}
