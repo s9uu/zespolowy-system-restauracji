@@ -55,6 +55,7 @@ public static class DaneStartowe
             Opis = "Domowy rosół z makaronem i natką pietruszki.",
             Cena = 14.00m,
             Porcja = "350 ml",
+            ZdjecieUrl = "images/rosol.jpg",
             Dostepne = true,
             KategoriaId = 1
         },
@@ -65,6 +66,7 @@ public static class DaneStartowe
             Opis = "Kotlet schabowy z ziemniakami i kapustą zasmażaną.",
             Cena = 34.00m,
             Porcja = "400 g",
+            ZdjecieUrl = "images/schab.jpg",
             Dostepne = true,
             KategoriaId = 2
         },
@@ -75,6 +77,7 @@ public static class DaneStartowe
             Opis = "Ręcznie lepione pierogi z mięsem, podawane ze skwarkami.",
             Cena = 26.00m,
             Porcja = "8 szt.",
+            ZdjecieUrl = "images/pierogimieso.jpg",
             Dostepne = true,
             KategoriaId = 3
         },
@@ -85,6 +88,7 @@ public static class DaneStartowe
             Opis = "Ciepła szarlotka z cynamonem.",
             Cena = 13.00m,
             Porcja = "150 g",
+            ZdjecieUrl = "images/szarlotka.jpg",
             Dostepne = true,
             KategoriaId = 4
         },
@@ -95,6 +99,7 @@ public static class DaneStartowe
             Opis = "Domowy kompot z owoców sezonowych.",
             Cena = 8.00m,
             Porcja = "300 ml",
+            ZdjecieUrl = "images/kompot.jpg",
             Dostepne = true,
             KategoriaId = 5
         }

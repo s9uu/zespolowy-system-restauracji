@@ -103,7 +103,8 @@ namespace Restauracja.Api.Migrations
                             Nazwa = "Rosół",
                             Opis = "Domowy rosół z makaronem i natką pietruszki.",
                             Porcja = "350 ml",
-                            Usuniete = false
+                            Usuniete = false,
+                            ZdjecieUrl = "images/rosol.jpg"
                         },
                         new
                         {
@@ -114,7 +115,8 @@ namespace Restauracja.Api.Migrations
                             Nazwa = "Kotlet schabowy",
                             Opis = "Kotlet schabowy z ziemniakami i kapustą zasmażaną.",
                             Porcja = "400 g",
-                            Usuniete = false
+                            Usuniete = false,
+                            ZdjecieUrl = "images/schab.jpg"
                         },
                         new
                         {
@@ -125,7 +127,8 @@ namespace Restauracja.Api.Migrations
                             Nazwa = "Pierogi z mięsem",
                             Opis = "Ręcznie lepione pierogi z mięsem, podawane ze skwarkami.",
                             Porcja = "8 szt.",
-                            Usuniete = false
+                            Usuniete = false,
+                            ZdjecieUrl = "images/pierogimieso.jpg"
                         },
                         new
                         {
@@ -136,7 +139,8 @@ namespace Restauracja.Api.Migrations
                             Nazwa = "Szarlotka",
                             Opis = "Ciepła szarlotka z cynamonem.",
                             Porcja = "150 g",
-                            Usuniete = false
+                            Usuniete = false,
+                            ZdjecieUrl = "images/szarlotka.jpg"
                         },
                         new
                         {
@@ -147,7 +151,8 @@ namespace Restauracja.Api.Migrations
                             Nazwa = "Kompot",
                             Opis = "Domowy kompot z owoców sezonowych.",
                             Porcja = "300 ml",
-                            Usuniete = false
+                            Usuniete = false,
+                            ZdjecieUrl = "images/kompot.jpg"
                         });
                 });
 
