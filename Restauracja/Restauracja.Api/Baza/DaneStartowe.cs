@@ -1,7 +1,7 @@
 namespace Restauracja.Api.Baza;
 
-// Id ręcznie, bo HasData ich wymaga
-// po zmianie danych nowa migracja
+// Id wpisane ręcznie, bo HasData tego wymaga
+// jak coś tu zmienisz, dodaj nową migrację
 public static class DaneStartowe
 {
     public static readonly Kategoria[] Kategorie =
@@ -37,7 +37,6 @@ public static class DaneStartowe
             Dostepne = true,
             KategoriaId = 3
         },
-        // niedostępny, żeby w menu był wyłączony przycisk "Dodaj do koszyka"
         new Danie
         {
             Id = 3,

@@ -4,7 +4,6 @@ using Restauracja.Shared;
 
 namespace Restauracja.Api.Baza;
 
-// UzytkownikId dojdzie w Sprincie 3 z kontami
 [Index(nameof(Kod), IsUnique = true)]
 public class Zamowienie
 {

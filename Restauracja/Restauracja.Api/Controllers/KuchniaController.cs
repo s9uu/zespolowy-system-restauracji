@@ -43,11 +43,10 @@ public class KuchniaController : ControllerBase
             .ToList();
     }
 
-    // status jako tekst, bo przy enumie w adresie zły status dostałby angielski błąd
+    // string, żeby zły status dał nasz komunikat po polsku
     [HttpPut("{kod}/status/{nowyStatus}")]
     public IActionResult ZmienStatus(string kod, string nowyStatus)
     {
-        // kody w bazie są wielkimi literami
         var kodWielkimi = kod.ToUpperInvariant();
         var zamowienie = baza.Zamowienia.FirstOrDefault(z => z.Kod == kodWielkimi);
 
@@ -57,11 +56,10 @@ public class KuchniaController : ControllerBase
         if (!Enum.TryParse<StatusZamowienia>(nowyStatus, true, out var status) || !Enum.IsDefined(status))
             return BadRequest("Nie ma takiego statusu.");
 
-        // tylko o jeden krok, dwa kliknięcia naraz nie przeskoczą statusu
+        // tylko następny status, gdyby ktoś kliknął dwa razy
         if (status != zamowienie.Status + 1)
             return Conflict("Status zamówienia już się zmienił. Odśwież listę.");
 
-        // wydane dopiero po opłaceniu
         if (status == StatusZamowienia.Wydane && !zamowienie.Oplacone)
             return Conflict("Najpierw oznacz zamówienie jako opłacone.");
 
@@ -80,7 +78,6 @@ public class KuchniaController : ControllerBase
         if (zamowienie == null)
             return NotFound("Nie ma takiego zamówienia.");
 
-        // drugie kliknięcie nic nie psuje, dalej true
         zamowienie.Oplacone = true;
         baza.SaveChanges();
 

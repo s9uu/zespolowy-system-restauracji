@@ -21,11 +21,11 @@ public class Danie
 
     public bool Dostepne { get; set; }
 
-    // usunięte zostaje w bazie, bo może być w starych zamówieniach
+    // zostaje w bazie, bo jest w starych zamówieniach
     public bool Usuniete { get; set; }
 
     public int KategoriaId { get; set; }
 
-    // null!, bo wypełnia to EF Core przy odczycie
+    // EF Core to uzupełni przy odczycie
     public Kategoria Kategoria { get; set; } = null!;
 }
