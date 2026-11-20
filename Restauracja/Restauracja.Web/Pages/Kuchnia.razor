@@ -1,0 +1,259 @@
+﻿@page "/kuchnia"
+@using Restauracja.Shared
+@using System.Threading
+@inject HttpClient Http
+@implements IDisposable
+
+<PageTitle>Kuchnia — Przy Stole</PageTitle>
+
+<div class="kitchen-page">
+
+    <header class="kitchen-header">
+        <div>
+            <span class="eyebrow">PANEL KUCHNI</span>
+            <h1>Zamówienia</h1>
+            <p>Lista zamówień i zmiana ich statusów.</p>
+        </div>
+
+        <div class="opening-hours">
+            <span></span> Otwarte dzisiaj · 12:00–22:00
+        </div>
+    </header>
+
+    @if (zamowienia != null)
+    {
+        <section class="statistics">
+
+            <div class="stat-card">
+                <div class="stat-icon orange">▤</div>
+                <div>
+                    <span>Wszystkie zamówienia</span>
+                    <strong>@zamowienia.Count</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon red">◷</div>
+                <div>
+                    <span>Nowe</span>
+                    <strong>@zamowienia.Count(z => z.Status == StatusZamowienia.Nowe)</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon yellow">♨</div>
+                <div>
+                    <span>W przygotowaniu</span>
+                    <strong>@zamowienia.Count(z => z.Status == StatusZamowienia.WPrzygotowaniu)</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">✓</div>
+                <div>
+                    <span>Gotowe</span>
+                    <strong>@zamowienia.Count(z => z.Status == StatusZamowienia.Gotowe)</strong>
+                </div>
+            </div>
+
+        </section>
+    }
+
+    <div class="orders-heading">
+        <h2>Aktualne zamówienia</h2>
+        <span>Sortuj według: <strong>Najstarsze</strong></span>
+    </div>
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="error-message">
+            @ErrorMessage
+        </div>
+    }
+
+    @if (IsLoading)
+    {
+        <p class="message">Ładowanie zamówień...</p>
+    }
+    else if (zamowienia == null || zamowienia.Count == 0)
+    {
+        <p class="message">Brak zamówień</p>
+    }
+    else
+    {
+        <section class="orders-grid">
+
+            @foreach (var z in zamowienia)
+            {
+                <article class="order-card" @key="z.Kod">
+
+                    <div class="order-top">
+                        <strong>Zamówienie @z.Kod</strong>
+
+                        <div class="order-time">
+                            <span>@z.DataZlozenia.ToString("HH:mm")</span>
+
+                            <span class="status-badge @StatusClass(z.Status)">
+                                @Nazwy.PoPolsku(z.Status)
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="customer">
+                        Klient: @z.ImieKlienta
+                    </p>
+
+                    <div class="dishes">
+                        @foreach (var pozycja in z.Pozycje)
+                        {
+                            <p>
+                                <span>@pozycja.Ilosc ×</span>
+                                @pozycja.NazwaDania
+                            </p>
+                        }
+                    </div>
+
+                    <div class="pickup-row">
+                        <span>Odbiór: @Nazwy.PoPolsku(z.SposobOdbioru)</span>
+
+                        <span class="payment-badge @(z.Oplacone ? "paid" : "unpaid")">
+                            @(z.Oplacone ? "Opłacone" : "Nieopłacone")
+                        </span>
+                    </div>
+
+                    <div class="order-footer">
+                        <strong class="price">
+                            @z.Kwota.ToString("0.00") zł
+                        </strong>
+
+                        <div class="order-buttons">
+
+                            @if (z.Status != StatusZamowienia.Wydane)
+                            {
+                                var nastepnyStatus = z.Status + 1;
+
+                                <button class="status-button"
+                                        @onclick="() => ZmienStatus(z)">
+                                    Zmień na: @Nazwy.PoPolsku(nastepnyStatus)
+                                </button>
+                            }
+
+                            @if (!z.Oplacone)
+                            {
+                                <button class="paid-button"
+                                        @onclick="() => OplacZamowienie(z)">
+                                    Opłacone
+                                </button>
+                            }
+
+                        </div>
+                    </div>
+
+                </article>
+            }
+
+        </section>
+    }
+
+</div>
+
+@code {
+    private List<ZamowienieKuchniaDto>? zamowienia;
+    private bool IsLoading = true;
+    private string ErrorMessage = "";
+    private Timer? timer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Pobierz();
+
+        timer = new Timer(async _ =>
+        {
+            await InvokeAsync(async () =>
+            {
+                await Pobierz(false);
+                StateHasChanged();
+            });
+        }, null, 5000, 5000);
+    }
+
+    private async Task Pobierz(bool wyczyscBlad = true)
+    {
+        try
+        {
+            zamowienia = await Http.GetFromJsonAsync<List<ZamowienieKuchniaDto>>(
+                "api/kuchnia/zamowienia");
+
+            zamowienia ??= new List<ZamowienieKuchniaDto>();
+
+            if (wyczyscBlad)
+                ErrorMessage = "";
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task ZmienStatus(ZamowienieKuchniaDto z)
+    {
+        var nowyStatus = z.Status + 1;
+        ErrorMessage = "";
+
+        try
+        {
+            var odp = await Http.PutAsync(
+                $"api/kuchnia/zamowienia/{z.Kod}/status/{nowyStatus}", null);
+
+            if (!odp.IsSuccessStatusCode)
+                ErrorMessage = await odp.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+
+        await Pobierz(false);
+    }
+
+    private async Task OplacZamowienie(ZamowienieKuchniaDto z)
+    {
+        ErrorMessage = "";
+
+        try
+        {
+            var odp = await Http.PutAsync(
+                $"api/kuchnia/zamowienia/{z.Kod}/oplacone", null);
+
+            if (!odp.IsSuccessStatusCode)
+                ErrorMessage = await odp.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+
+        await Pobierz(false);
+    }
+
+    private string StatusClass(StatusZamowienia status)
+    {
+        return status switch
+        {
+            StatusZamowienia.Nowe => "new",
+            StatusZamowienia.WPrzygotowaniu => "preparing",
+            StatusZamowienia.Gotowe => "ready",
+            StatusZamowienia.Wydane => "issued",
+            _ => ""
+        };
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}
