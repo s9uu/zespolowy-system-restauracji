@@ -10,13 +10,13 @@ public class PozycjaZamowienia
 
     public int DanieId { get; set; }
 
-    // Kopia z chwili zamówienia, żeby późniejsza zmiana dania nie zmieniała starych zamówień.
+    // zapisujemy nazwę i cenę, bo menu może się zmienić
     public string NazwaDania { get; set; } = "";
     public decimal CenaDania { get; set; }
 
     public int Ilosc { get; set; }
 
-    // Domyślnie skasowanie dania skasowałoby też jego pozycje w starych zamówieniach.
+    // usunięcie dania nie może skasować starych zamówień
     [DeleteBehavior(DeleteBehavior.Restrict)]
     public Danie Danie { get; set; } = null!;
 }

@@ -44,3 +44,13 @@ GET {{Restauracja.Api_HostAddress}}/api/kuchnia/zamowienia
 Accept: application/json
 
 ###
+
+# Wpisz kod z POST. Status tylko o jeden krok: WPrzygotowaniu, Gotowe, Wydane.
+PUT {{Restauracja.Api_HostAddress}}/api/kuchnia/zamowienia/ABC234/status/WPrzygotowaniu
+
+###
+
+# Bez tego Wydane da 409.
+PUT {{Restauracja.Api_HostAddress}}/api/kuchnia/zamowienia/ABC234/oplacone
+
+###
