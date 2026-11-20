@@ -84,7 +84,7 @@ Scrum, sprinty tygodniowe od 16.11, przegląd na koniec każdego sprintu.
 | Faza | Termin | Co powstaje | Przegląd |
 |---|---|---|---|
 | Sprint 0 | 16.10–29.10.2026 | opis produktu, lista user stories, repozytorium, makiety ekranów | 30.10.2026 |
-| Sprint 1 | 30.10–12.11.2026 | baza danych, menu, koszyk | 13.11.2026 |
+| Sprint 1 | 30.10–12.11.2026 | baza danych, menu, koszyk | 16.11.2026 |
 | Sprint 2 | 13.11–22.11.2026 | składanie zamówienia, status, panel kuchni | 23.11.2026 |
 | Sprint 3 | 23.11–29.11.2026 | logowanie i role, zarządzanie menu | 30.11.2026 |
 | Sprint 4 | 30.11–06.12.2026 | panele chronione rolami, konto klienta i historia zamówień | 07.12.2026 (gotowe MVP) |
