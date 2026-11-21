@@ -184,8 +184,7 @@
                 (wybranaKategoria == "Wszystkie" ||
                  d.Kategoria == wybranaKategoria) &&
                 (string.IsNullOrWhiteSpace(fraza) ||
-                 d.Nazwa.IndexOf(fraza, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 d.Opis.IndexOf(fraza, StringComparison.OrdinalIgnoreCase) >= 0));
+                 d.Nazwa.IndexOf(fraza, StringComparison.OrdinalIgnoreCase) >= 0));
         }
     }
 
