@@ -1,0 +1,207 @@
+﻿@page "/admin"
+@using Restauracja.Shared
+@using System.Globalization
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<PageTitle>Panel administratora — Przy Stole</PageTitle>
+
+<div class="admin-page">
+
+    <header class="admin-header">
+        <div>
+            <span class="eyebrow">PANEL ADMINISTRATORA</span>
+            <h1>Zarządzanie menu</h1>
+            <p>Edytuj dania i zarządzaj ich dostępnością.</p>
+        </div>
+
+        <a class="menu-link" href="menu">Menu restauracji</a>
+    </header>
+
+    @if (dania != null)
+    {
+        <section class="statistics">
+
+            <div class="stat-card">
+                <div class="stat-icon orange">▤</div>
+                <div>
+                    <span>Wszystkie dania</span>
+                    <strong>@dania.Count</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">✓</div>
+                <div>
+                    <span>Dostępne</span>
+                    <strong>@dania.Count(d => d.Dostepne)</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon red">×</div>
+                <div>
+                    <span>Niedostępne</span>
+                    <strong>@dania.Count(d => !d.Dostepne)</strong>
+                </div>
+            </div>
+
+        </section>
+    }
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="error-message">
+            @ErrorMessage
+        </div>
+    }
+
+    <section class="menu-table-card">
+
+        <div class="table-heading">
+            <h2>Pozycje menu</h2>
+            @if (dania != null)
+            {
+                <span>@dania.Count pozycji</span>
+            }
+        </div>
+
+        @if (IsLoading)
+        {
+            <p class="message">Ładowanie dań...</p>
+        }
+        else if (dania == null || dania.Count == 0)
+        {
+            <p class="message">Brak dań</p>
+        }
+        else
+        {
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nazwa dania</th>
+                            <th>Kategoria</th>
+                            <th>Cena</th>
+                            <th>Dostępność</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in dania)
+                        {
+                            <tr @key="d.Id">
+                                <td>
+                                    <span class="dish-name">@d.Nazwa</span>
+                                    @if (!string.IsNullOrWhiteSpace(d.Porcja))
+                                    {
+                                        <span class="dish-portion">@d.Porcja</span>
+                                    }
+                                </td>
+                                <td class="category">@d.Kategoria</td>
+                                <td class="price">@d.Cena.ToString("0.00", kultura) zł</td>
+                                <td>
+                                    <span class="availability @(d.Dostepne ? "available" : "unavailable")">
+                                        @(d.Dostepne ? "Dostępne" : "Niedostępne")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="actions">
+                                        <button class="delete-button"
+                                                @onclick="() => Usun(d)">
+                                            Usuń
+                                        </button>
+                                        <button class="toggle-button"
+                                                @onclick="() => ZmienDostepnosc(d)">
+                                            @(d.Dostepne ? "Wyłącz" : "Włącz")
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </section>
+
+</div>
+
+@code {
+    private List<DanieDto>? dania;
+    private bool IsLoading = true;
+    private string ErrorMessage = "";
+
+    private readonly CultureInfo kultura =
+        CultureInfo.GetCultureInfo("pl-PL");
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Pobierz();
+    }
+
+    private async Task Pobierz()
+    {
+        try
+        {
+            // GET api/menu odsyła wszystkie dania oprócz ukrytych, także niedostępne.
+            dania = await Http.GetFromJsonAsync<List<DanieDto>>("api/menu");
+            dania ??= new List<DanieDto>();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task ZmienDostepnosc(DanieDto d)
+    {
+        ErrorMessage = "";
+        var nowaWartosc = d.Dostepne ? "false" : "true";
+
+        try
+        {
+            var odp = await Http.PutAsync(
+                $"api/admin/dania/{d.Id}/dostepne/{nowaWartosc}", null);
+
+            if (!odp.IsSuccessStatusCode)
+                ErrorMessage = await odp.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+
+        await Pobierz();
+    }
+
+    private async Task Usun(DanieDto d)
+    {
+        var potwierdzone = await JS.InvokeAsync<bool>(
+            "confirm", $"Czy na pewno usunąć danie „{d.Nazwa}”?");
+
+        if (!potwierdzone)
+            return;
+
+        ErrorMessage = "";
+
+        try
+        {
+            var odp = await Http.DeleteAsync($"api/admin/dania/{d.Id}");
+
+            if (!odp.IsSuccessStatusCode)
+                ErrorMessage = await odp.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+
+        await Pobierz();
+    }
+}

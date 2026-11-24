@@ -1,0 +1,267 @@
+﻿.admin-page {
+    min-height: 100vh;
+    padding: 30px;
+    background: #faf8f5;
+    color: #302820;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.eyebrow {
+    color: #b84b30;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.admin-header h1 {
+    margin: 8px 0;
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.admin-header p {
+    margin: 0;
+    color: #8b8178;
+    font-size: 14px;
+}
+
+.menu-link {
+    color: #8b8178;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+    .menu-link:hover {
+        color: #b84b30;
+    }
+
+.statistics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 17px;
+    background: white;
+    border: 1px solid #eadfd5;
+    border-radius: 11px;
+}
+
+    .stat-card span {
+        display: block;
+        margin-bottom: 5px;
+        color: #8b8178;
+        font-size: 12px;
+    }
+
+    .stat-card strong {
+        font-size: 22px;
+    }
+
+.stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    font-size: 19px;
+}
+
+    .stat-icon.orange {
+        background: #f8eee5;
+        color: #b84b30;
+    }
+
+    .stat-icon.green {
+        background: #edf2e9;
+        color: #819b70;
+    }
+
+    .stat-icon.red {
+        background: #fbe9e6;
+        color: #d36b55;
+    }
+
+.menu-table-card {
+    background: white;
+    border: 1px solid #eadfd5;
+    border-radius: 11px;
+    overflow: hidden;
+}
+
+.table-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee7df;
+}
+
+    .table-heading h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    .table-heading span {
+        color: #968a80;
+        font-size: 12px;
+    }
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th {
+    padding: 12px 20px;
+    background: #faf8f5;
+    border-bottom: 1px solid #eee7df;
+    color: #968a80;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: left;
+}
+
+td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #eee7df;
+    vertical-align: middle;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.dish-name {
+    display: block;
+    color: #302820;
+}
+
+.dish-portion {
+    display: block;
+    margin-top: 4px;
+    color: #a18f80;
+    font-size: 11px;
+}
+
+.category {
+    color: #62574e;
+    font-size: 12px;
+}
+
+.price {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.availability {
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+    .availability::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        margin-right: 6px;
+        border-radius: 50%;
+        vertical-align: middle;
+        background: currentColor;
+    }
+
+    .availability.available {
+        color: #819b70;
+    }
+
+    .availability.unavailable {
+        color: #c56a57;
+    }
+
+.actions {
+    display: flex;
+    gap: 6px;
+}
+
+    .actions button {
+        padding: 7px 12px;
+        border-radius: 5px;
+        font-size: 11px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+.delete-button {
+    border: 1px solid #e8b7ad;
+    background: #fbe9e6;
+    color: #a33c2b;
+}
+
+    .delete-button:hover {
+        background: #f6d8d2;
+    }
+
+.toggle-button {
+    border: 1px solid #cfdcc5;
+    background: #edf2e9;
+    color: #5d754f;
+}
+
+    .toggle-button:hover {
+        background: #dfe8d7;
+    }
+
+.message {
+    margin: 0;
+    padding: 25px;
+    color: #81766c;
+    text-align: center;
+}
+
+.error-message {
+    margin-bottom: 14px;
+    padding: 12px;
+    border: 1px solid #e8b7ad;
+    border-radius: 7px;
+    background: #fff0ed;
+    color: #a33c2b;
+}
+
+@media (max-width: 700px) {
+    .admin-page {
+        padding: 16px;
+    }
+
+    .admin-header {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+
+    .statistics {
+        grid-template-columns: 1fr;
+    }
+
+    th,
+    td {
+        padding: 12px;
+    }
+}
