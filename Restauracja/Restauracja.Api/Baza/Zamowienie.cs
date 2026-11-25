@@ -25,5 +25,8 @@ public class Zamowienie
 
     public bool Oplacone { get; set; }
 
+    // puste u gościa
+    public string? UzytkownikId { get; set; }
+
     public List<PozycjaZamowienia> Pozycje { get; set; } = new();
 }

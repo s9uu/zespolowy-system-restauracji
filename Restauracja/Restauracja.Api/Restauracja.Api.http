@@ -54,3 +54,43 @@ PUT {{Restauracja.Api_HostAddress}}/api/kuchnia/zamowienia/ABC234/status/WPrzygo
 PUT {{Restauracja.Api_HostAddress}}/api/kuchnia/zamowienia/ABC234/oplacone
 
 ###
+
+# Konto testowe. Drugi raz ten sam e-mail da 400.
+POST {{Restauracja.Api_HostAddress}}/api/konto/rejestracja
+Content-Type: application/json
+
+{
+  "email": "klient@przystole.test",
+  "password": "Przyklad1!"
+}
+
+###
+
+# Logowanie. Złe hasło da 401.
+POST {{Restauracja.Api_HostAddress}}/api/konto/login?useCookies=true
+Content-Type: application/json
+
+{
+  "email": "klient@przystole.test",
+  "password": "Przyklad1!"
+}
+
+###
+
+# Te trzy działają tylko po zalogowaniu, sprawdzamy je na stronie logowania.
+GET {{Restauracja.Api_HostAddress}}/api/konto/manage/info
+Accept: application/json
+
+###
+
+GET {{Restauracja.Api_HostAddress}}/api/konto/role
+Accept: application/json
+
+###
+
+POST {{Restauracja.Api_HostAddress}}/api/konto/wyloguj
+Content-Type: application/json
+
+{}
+
+###
