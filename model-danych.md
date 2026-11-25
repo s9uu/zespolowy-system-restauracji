@@ -161,7 +161,7 @@ Kopia nazwy i ceny jest po to, żeby stare zamówienia pokazywały to, co klient
 
 Konta, hasła i role daje ASP.NET Core Identity. Rozpisujemy tylko tabele, których używamy.
 
-**Uzytkownik** (tabela AspNetUsers, gotowa klasa IdentityUser bez własnych pól). Rejestracja: e-mail i hasło przez gotowe endpointy Identity (`MapIdentityApi`). Konto nie ma imienia, imię klient podaje przy każdym zamówieniu.
+**Uzytkownik** (tabela AspNetUsers, gotowa klasa IdentityUser bez własnych pól). Rejestracja: e-mail i hasło przez nasz adres `/api/konto/rejestracja`, który od razu daje rolę Klient. Logowanie przez gotowe endpointy Identity (`MapIdentityApi`). Konto nie ma imienia, imię klient podaje przy każdym zamówieniu.
 
 | Pole | Typ C# | Opis |
 |---|---|---|
