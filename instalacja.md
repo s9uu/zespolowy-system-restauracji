@@ -37,6 +37,28 @@ SQLite nie instalujemy osobno, bo baza to jeden plik, a jej obsługę dodajemy d
 
 Jeśli przy projektach jest dopisek „(zwolniony)”, kliknij je prawym przyciskiem i wybierz „Załaduj ponownie projekt”.
 
+## Konta startowe (User Secrets)
+
+Api przy starcie zakłada dwa konta startowe: pracownik@przystole.test i admin@przystole.test. Hasła do nich każdy wymyśla sam i zapisuje w User Secrets, czyli w pliku na swoim komputerze, poza repozytorium. Dzięki temu hasła nie trafiają na GitHuba.
+
+1. W Eksploratorze rozwiązań kliknij prawym przyciskiem projekt Restauracja.Api i wybierz „Zarządzaj tajnymi danymi użytkownika” (po angielsku „Manage User Secrets”).
+2. Otworzy się plik secrets.json. Zastąp całą jego zawartość poniższym tekstem, a w miejsce twoje-haslo-1 i twoje-haslo-2 wpisz swoje hasła. Plik musi być poprawnym JSON-em, inaczej Api się nie uruchomi.
+
+```json
+{
+  "KontaStartowe": {
+    "HasloPracownika": "twoje-haslo-1",
+    "HasloAdministratora": "twoje-haslo-2"
+  }
+}
+```
+
+3. Zapisz plik (Ctrl+S) i uruchom aplikację jeszcze raz.
+
+Każde hasło musi mieć co najmniej 6 znaków, wielką i małą literę, cyfrę i znak specjalny, np. ! albo #. Jeśli hasła nie ma albo jest za słabe, konto nie powstaje, a Api pisze o tym w konsoli i działa dalej.
+
+Konto powstaje tylko raz, więc późniejsza zmiana hasła w User Secrets nie zmienia hasła istniejącego konta. Żeby to zrobić, zatrzymaj aplikację, usuń z folderu Restauracja.Api plik restauracja.db (oraz restauracja.db-shm i restauracja.db-wal, jeśli są) i uruchom ją ponownie. Razem z bazą znikają lokalne zamówienia i konta.
+
 ## Przed pierwszym commitem
 
 W Visual Studio kliknij Git → Ustawienia → Ustawienia globalne Git i wpisz nazwę użytkownika z GitHuba oraz adres e-mail noreply ze strony https://github.com/settings/emails (wygląda tak: 12345678+login@users.noreply.github.com). Dzięki temu commity od razu liczą się na Twoje konto, a prywatny e-mail nie jest widoczny w repozytorium.
