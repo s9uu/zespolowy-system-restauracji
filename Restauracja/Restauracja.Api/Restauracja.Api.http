@@ -5,6 +5,84 @@ Accept: application/json
 
 ###
 
+GET {{Restauracja.Api_HostAddress}}/api/menu/kategorie
+Accept: application/json
+
+###
+
+POST {{Restauracja.Api_HostAddress}}/api/admin/dania
+Content-Type: application/json
+
+{
+  "nazwa": "Barszcz czerwony",
+  "kategoriaId": 1,
+  "cena": 15.00,
+  "opis": "Barszcz z uszkami.",
+  "porcja": "300 ml",
+  "zdjecieUrl": ""
+}
+
+###
+
+POST {{Restauracja.Api_HostAddress}}/api/admin/dania
+Content-Type: application/json
+
+{
+  "nazwa": "   ",
+  "kategoriaId": 1,
+  "cena": 15.00
+}
+
+###
+
+POST {{Restauracja.Api_HostAddress}}/api/admin/dania
+Content-Type: application/json
+
+{
+  "nazwa": "Barszcz czerwony",
+  "kategoriaId": 1,
+  "cena": 0
+}
+
+###
+
+POST {{Restauracja.Api_HostAddress}}/api/admin/dania
+Content-Type: application/json
+
+{
+  "nazwa": "Barszcz czerwony",
+  "kategoriaId": 99,
+  "cena": 15.00
+}
+
+###
+
+PUT {{Restauracja.Api_HostAddress}}/api/admin/dania/9
+Content-Type: application/json
+
+{
+  "nazwa": "Barszcz czerwony z uszkami",
+  "kategoriaId": 1,
+  "cena": 17.00,
+  "opis": "Barszcz z uszkami z grzybami.",
+  "porcja": "350 ml",
+  "zdjecieUrl": ""
+}
+
+###
+
+PUT {{Restauracja.Api_HostAddress}}/api/admin/dania/9/dostepne/false
+
+###
+
+PUT {{Restauracja.Api_HostAddress}}/api/admin/dania/9/dostepne/true
+
+###
+
+DELETE {{Restauracja.Api_HostAddress}}/api/admin/dania/9
+
+###
+
 # Złożenie zamówienia. SposobOdbioru: 0 = na miejscu, 1 = na wynos.
 # Żurek dwa razy osobno: Api połączy go w jedną pozycję (3 szt.).
 POST {{Restauracja.Api_HostAddress}}/api/zamowienia
