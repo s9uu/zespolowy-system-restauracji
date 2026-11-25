@@ -4,6 +4,7 @@ using Restauracja.Shared;
 
 namespace Restauracja.Api.Controllers;
 
+// Bez [Authorize], bo blokadę dla administratora dodajemy w Sprincie 4.
 [ApiController]
 [Route("api/admin/dania")]
 public class AdminController : ControllerBase
@@ -22,6 +23,7 @@ public class AdminController : ControllerBase
         if (blad != null)
             return BadRequest(blad);
 
+        // Nowe danie jest od razu dostępne, bo zakładamy, że kuchnia może je już przygotować.
         var danie = new Danie { Dostepne = true };
         PrzepiszDane(dane, danie);
 
@@ -55,6 +57,7 @@ public class AdminController : ControllerBase
         if (danie == null)
             return NotFound("Nie ma takiego dania.");
 
+        // Danie zostaje w bazie, żeby nie zniknęło ze starych zamówień.
         danie.Usuniete = true;
         baza.SaveChanges();
 
@@ -68,12 +71,14 @@ public class AdminController : ControllerBase
         if (danie == null)
             return NotFound("Nie ma takiego dania.");
 
+        // Ustawiamy podaną wartość zamiast przełączać, więc drugie "Wyłącz" nie daje błędu.
         danie.Dostepne = dostepne;
         baza.SaveChanges();
 
         return NoContent();
     }
 
+    // Ukryte danie zostaje w bazie tylko dla starych zamówień, więc w panelu traktujemy je jak usunięte.
     private Danie? ZnajdzDanie(int id)
     {
         return baza.Dania.FirstOrDefault(d => d.Id == id && !d.Usuniete);
@@ -81,6 +86,7 @@ public class AdminController : ControllerBase
 
     private string? SprawdzDane(DanieZapisDto dane)
     {
+        // Bez Trim() nazwa z samych spacji przeszłaby jako niepusta.
         var nazwa = (dane.Nazwa ?? "").Trim();
 
         if (nazwa == "")

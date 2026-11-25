@@ -10,6 +10,7 @@ Accept: application/json
 
 ###
 
+# Nowe danie jest od razu dostępne. Api odsyła jego Id.
 POST {{Restauracja.Api_HostAddress}}/api/admin/dania
 Content-Type: application/json
 
@@ -24,6 +25,7 @@ Content-Type: application/json
 
 ###
 
+# Nazwa z samych spacji: 400.
 POST {{Restauracja.Api_HostAddress}}/api/admin/dania
 Content-Type: application/json
 
@@ -35,6 +37,7 @@ Content-Type: application/json
 
 ###
 
+# Cena 0: 400.
 POST {{Restauracja.Api_HostAddress}}/api/admin/dania
 Content-Type: application/json
 
@@ -46,6 +49,7 @@ Content-Type: application/json
 
 ###
 
+# Nie ma kategorii 99: 400.
 POST {{Restauracja.Api_HostAddress}}/api/admin/dania
 Content-Type: application/json
 
@@ -57,6 +61,7 @@ Content-Type: application/json
 
 ###
 
+# Wpisz Id zwrócone przez POST.
 PUT {{Restauracja.Api_HostAddress}}/api/admin/dania/9
 Content-Type: application/json
 
@@ -71,6 +76,7 @@ Content-Type: application/json
 
 ###
 
+# Drugi raz też 204, bez błędu.
 PUT {{Restauracja.Api_HostAddress}}/api/admin/dania/9/dostepne/false
 
 ###
@@ -79,6 +85,7 @@ PUT {{Restauracja.Api_HostAddress}}/api/admin/dania/9/dostepne/true
 
 ###
 
+# Danie znika z menu, ale zostaje w bazie. Drugi raz da 404.
 DELETE {{Restauracja.Api_HostAddress}}/api/admin/dania/9
 
 ###

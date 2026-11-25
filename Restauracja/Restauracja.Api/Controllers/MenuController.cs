@@ -26,6 +26,7 @@ public class MenuController : ControllerBase
             {
                 Id = d.Id,
                 Nazwa = d.Nazwa,
+                // Po tym numerze formularz edycji w Sprincie 4 zaznaczy kategorię dania.
                 KategoriaId = d.KategoriaId,
                 Kategoria = d.Kategoria.Nazwa,
                 Cena = d.Cena,
