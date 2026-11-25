@@ -26,6 +26,7 @@ public class MenuController : ControllerBase
             {
                 Id = d.Id,
                 Nazwa = d.Nazwa,
+                KategoriaId = d.KategoriaId,
                 Kategoria = d.Kategoria.Nazwa,
                 Cena = d.Cena,
                 Dostepne = d.Dostepne,
@@ -33,6 +34,19 @@ public class MenuController : ControllerBase
                 Opis = d.Opis ?? "",
                 ZdjecieUrl = d.ZdjecieUrl ?? "",
                 Porcja = d.Porcja ?? ""
+            })
+            .ToList();
+    }
+
+    [HttpGet("kategorie")]
+    public List<KategoriaDto> PobierzKategorie()
+    {
+        return baza.Kategorie
+            .OrderBy(k => k.Id)
+            .Select(k => new KategoriaDto
+            {
+                Id = k.Id,
+                Nazwa = k.Nazwa
             })
             .ToList();
     }
