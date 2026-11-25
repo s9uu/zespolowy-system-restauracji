@@ -5,6 +5,91 @@ Accept: application/json
 
 ###
 
+GET {{Restauracja.Api_HostAddress}}/api/menu/kategorie
+Accept: application/json
+
+###
+
+# Nowe danie jest od razu dostępne. Api odsyła jego Id.
+POST {{Restauracja.Api_HostAddress}}/api/admin/dania
+Content-Type: application/json
+
+{
+  "nazwa": "Barszcz czerwony",
+  "kategoriaId": 1,
+  "cena": 15.00,
+  "opis": "Barszcz z uszkami.",
+  "porcja": "300 ml",
+  "zdjecieUrl": ""
+}
+
+###
+
+# Nazwa z samych spacji: 400.
+POST {{Restauracja.Api_HostAddress}}/api/admin/dania
+Content-Type: application/json
+
+{
+  "nazwa": "   ",
+  "kategoriaId": 1,
+  "cena": 15.00
+}
+
+###
+
+# Cena 0: 400.
+POST {{Restauracja.Api_HostAddress}}/api/admin/dania
+Content-Type: application/json
+
+{
+  "nazwa": "Barszcz czerwony",
+  "kategoriaId": 1,
+  "cena": 0
+}
+
+###
+
+# Nie ma kategorii 99: 400.
+POST {{Restauracja.Api_HostAddress}}/api/admin/dania
+Content-Type: application/json
+
+{
+  "nazwa": "Barszcz czerwony",
+  "kategoriaId": 99,
+  "cena": 15.00
+}
+
+###
+
+# Wpisz Id zwrócone przez POST.
+PUT {{Restauracja.Api_HostAddress}}/api/admin/dania/9
+Content-Type: application/json
+
+{
+  "nazwa": "Barszcz czerwony z uszkami",
+  "kategoriaId": 1,
+  "cena": 17.00,
+  "opis": "Barszcz z uszkami z grzybami.",
+  "porcja": "350 ml",
+  "zdjecieUrl": ""
+}
+
+###
+
+# Drugi raz też 204, bez błędu.
+PUT {{Restauracja.Api_HostAddress}}/api/admin/dania/9/dostepne/false
+
+###
+
+PUT {{Restauracja.Api_HostAddress}}/api/admin/dania/9/dostepne/true
+
+###
+
+# Danie znika z menu, ale zostaje w bazie. Drugi raz da 404.
+DELETE {{Restauracja.Api_HostAddress}}/api/admin/dania/9
+
+###
+
 # Złożenie zamówienia. SposobOdbioru: 0 = na miejscu, 1 = na wynos.
 # Żurek dwa razy osobno: Api połączy go w jedną pozycję (3 szt.).
 POST {{Restauracja.Api_HostAddress}}/api/zamowienia
