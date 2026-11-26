@@ -1,4 +1,8 @@
-﻿
+﻿@inject IAccountManagement AccountManagement
+@inject NavigationManager Navigation
+@inject CartService CartService
+@implements IDisposable
+
 <nav class="navbar navbar-expand-md pasek">
     <div class="container-fluid pasek-srodek">
         <a class="navbar-brand" href="">Przy Stole</a>
@@ -14,7 +18,26 @@
             <div class="navbar-nav ms-auto linki">
                 <NavLink class="nav-link" href="menu">Menu</NavLink>
                 <NavLink class="nav-link" href="status">Status zamówienia</NavLink>
-                <NavLink class="nav-link koszyk" href="cart">Koszyk</NavLink>
+                <NavLink class="nav-link koszyk" href="cart">
+                    Koszyk
+                    @if (itemCount > 0)
+                    {
+                        <span class="cart-count">@itemCount</span>
+                    }
+                </NavLink>
+
+                <AuthorizeView>
+                    <Authorized>
+                        <button class="nav-link" @onclick="Wyloguj">
+                            Wyloguj
+                        </button>
+                    </Authorized>
+                    <NotAuthorized>
+                        <NavLink class="nav-link" href="logowanie">
+                            Zaloguj się
+                        </NavLink>
+                    </NotAuthorized>
+                </AuthorizeView>
             </div>
         </div>
     </div>
@@ -33,5 +56,40 @@
     private void ZwinMenu()
     {
         menuOtwarte = false;
+    }
+
+    private async Task Wyloguj()
+    {
+        try
+        {
+            await AccountManagement.LogoutAsync();
+            Navigation.NavigateTo("/menu");
+        }
+        catch
+        {
+            // Nie przekierowujemy, jeśli wylogowanie się nie powiodło.
+        }
+    }
+
+    private int itemCount;
+
+    protected override void OnInitialized()
+    {
+        itemCount = CartService.ItemCount;
+        CartService.OnChange += AktualizujLicznik;
+    }
+
+    private void AktualizujLicznik()
+    {
+        _ = InvokeAsync(() =>
+        {
+            itemCount = CartService.ItemCount;
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        CartService.OnChange -= AktualizujLicznik;
     }
 }
