@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -10,23 +9,23 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Handler obs≥ugujπcy cookies dla wszystkich zapytaÒ do API.
+// Handler obs≈ÇugujƒÖcy cookies dla wszystkich zapyta≈Ñ do API.
 builder.Services.AddTransient<CookieHandler>();
 
-// WspÛlny klient HTTP z obs≥ugπ cookies.
+// Wsp√≥lny klient HTTP z obs≈ÇugƒÖ cookies.
 builder.Services.AddHttpClient("Auth", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7097/");
 })
 .AddHttpMessageHandler<CookieHandler>();
 
-// Domyúlny HttpClient rÛwnieø korzysta z tego samego handlera.
+// Domy≈õlny HttpClient r√≥wnie≈º korzysta z tego samego handlera.
 builder.Services.AddScoped(sp =>
     sp.GetRequiredService<IHttpClientFactory>().CreateClient("Auth"));
 
 builder.Services.AddScoped<CartService>();
 
-// Obs≥uga stanu uwierzytelnienia.
+// Obs≈Çuga stanu uwierzytelnienia.
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<CookieAuthenticationStateProvider>();
