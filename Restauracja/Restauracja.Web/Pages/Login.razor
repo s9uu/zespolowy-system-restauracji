@@ -1,0 +1,277 @@
+﻿@page "/logowanie"
+
+@inject NavigationManager Navigation
+@inject IAccountManagement AccountManagement
+
+<PageTitle>Logowanie i rejestracja | Przy Stole</PageTitle>
+
+<main class="account-page">
+    <header class="introduction">
+        <h1>Logowanie i rejestracja</h1>
+        <p class="lead">Zaloguj się lub utwórz konto w Przy Stole.</p>
+    </header>
+
+    <section class="account-panel" aria-labelledby="form-title">
+        <div class="account-card">
+            <div class="form-switch" role="tablist" aria-label="Wybierz formularz">
+                <button type="button"
+                        role="tab"
+                        aria-selected="@(!isRegistration)"
+                        class="@GetTabClass(false)"
+                        @onclick="ShowLogin">
+                    Logowanie
+                </button>
+                <button type="button"
+                        role="tab"
+                        aria-selected="@isRegistration"
+                        class="@GetTabClass(true)"
+                        @onclick="ShowRegistration">
+                    Rejestracja
+                </button>
+            </div>
+
+            @if (isRegistration)
+            {
+                <div class="form-intro">
+                    <h2 id="form-title">Dołącz do naszego stołu</h2>
+                    <p>Wpisz swoje dane, aby utworzyć konto.</p>
+                </div>
+
+                <EditForm Model="@registration" OnValidSubmit="Register" class="account-form" role="tabpanel">
+                    <DataAnnotationsValidator />
+                    <div class="fields">
+                        <div class="field">
+                            <label for="registration-email">E-mail</label>
+                            <InputText id="registration-email"
+                                       type="email"
+                                       @bind-Value="registration.Email"
+                                       @oninput="ClearStatus"
+                                       placeholder="Wpisz adres e-mail" />
+                            <ValidationMessage For="@(() => registration.Email)" />
+                        </div>
+                        <div class="field">
+                            <label for="registration-password">Hasło</label>
+                            <InputText id="registration-password"
+                                       type="password"
+                                       @bind-Value="registration.Password"
+                                       @oninput="ClearStatus"
+                                       placeholder="Wpisz hasło" />
+                            <ValidationMessage For="@(() => registration.Password)" />
+
+                            <p class="password-hint">
+                                Hasło powinno zawierać:
+                                <br />• minimum 6 znaków
+                                <br />• co najmniej jedną małą i wielką literę
+                                <br />• co najmniej jedną cyfrę
+                                <br />• co najmniej jeden znak specjalny
+                            </p>
+                        </div>
+                        <div class="field">
+                            <label for="registration-confirm-password">Powtórz hasło</label>
+                            <InputText id="registration-confirm-password"
+                                       type="password"
+                                       @bind-Value="registration.ConfirmPassword"
+                                       @oninput="ClearStatus"
+                                       placeholder="Wpisz hasło ponownie" />
+                            <ValidationMessage For="@(() => registration.ConfirmPassword)" />
+                        </div>
+                    </div>
+                    <button class="submit-button" type="submit" disabled="@isProcessing">
+                        @(isProcessing ? "Tworzenie konta..." : "Utwórz konto")
+                    </button>
+                </EditForm>
+            }
+            else
+            {
+                <div class="form-intro">
+                    <h2 id="form-title">Witaj ponownie</h2>
+                    <p>Wpisz swoje dane, aby zalogować się do konta.</p>
+                </div>
+
+                <EditForm Model="@login" OnValidSubmit="LogIn" class="account-form" role="tabpanel">
+                    <DataAnnotationsValidator />
+                    <div class="fields">
+                        <div class="field">
+                            <label for="login-email">E-mail</label>
+                            <InputText id="login-email"
+                                       type="email"
+                                       @bind-Value="login.Email"
+                                       @oninput="ClearStatus"
+                                       placeholder="Wpisz adres e-mail" />
+                            <ValidationMessage For="@(() => login.Email)" />
+                        </div>
+                        <div class="field">
+                            <label for="login-password">Hasło</label>
+                            <InputText id="login-password"
+                                       type="password"
+                                       @bind-Value="login.Password"
+                                       @oninput="ClearStatus"
+                                       placeholder="Wpisz hasło" />
+                            <ValidationMessage For="@(() => login.Password)" />
+                        </div>
+                    </div>
+                    <button class="submit-button" type="submit" disabled="@isProcessing">
+                        @(isProcessing ? "Logowanie..." : "Zaloguj się")
+                    </button>
+                </EditForm>
+            }
+
+            @if (!string.IsNullOrEmpty(statusMessage))
+            {
+                <p class="status-message @(isError ? "error" : "success")"
+                   role="status">
+                    @statusMessage
+                </p>
+            }
+        </div>
+    </section>
+</main>
+
+@code {
+    private bool isRegistration = false;
+    private bool isProcessing = false;
+    private string? statusMessage;
+    private bool isError = false;
+    private readonly RegistrationModel registration = new();
+    private readonly LoginModel login = new();
+
+    private string GetTabClass(bool registrationTab) =>
+        isRegistration == registrationTab ? "form-tab active" : "form-tab";
+
+    private void ShowLogin()
+    {
+        isRegistration = false;
+        statusMessage = null;
+        isError = false;
+
+        registration.Email = string.Empty;
+        registration.Password = string.Empty;
+        registration.ConfirmPassword = string.Empty;
+
+        login.Email = string.Empty;
+        login.Password = string.Empty;
+    }
+
+    private void ShowRegistration()
+    {
+        isRegistration = true;
+        statusMessage = null;
+        isError = false;
+
+        registration.Email = string.Empty;
+        registration.Password = string.Empty;
+        registration.ConfirmPassword = string.Empty;
+
+        login.Email = string.Empty;
+        login.Password = string.Empty;
+    }
+
+
+    private async Task Register()
+    {
+        if (isProcessing)
+            return;
+
+        isProcessing = true;
+        statusMessage = null;
+        isError = false;
+
+        try
+        {
+            var result = await AccountManagement.RegisterAsync(
+                registration.Email,
+                registration.Password);
+
+            if (!result.Succeeded)
+            {
+                statusMessage = string.Join(" ", result.ErrorList);
+                isError = true;
+                return;
+            }
+
+            // Konto utworzone – teraz automatycznie logujemy użytkownika.
+            var loginResult = await AccountManagement.LoginAsync(
+                registration.Email,
+                registration.Password);
+
+            if (!loginResult.Succeeded)
+            {
+                statusMessage = "Konto zostało utworzone. Zaloguj się, używając swoich danych.";
+                isError = true;
+                isRegistration = false;
+                login.Email = registration.Email;
+                login.Password = string.Empty;
+                return;
+            }
+
+            Navigation.NavigateTo("/menu");
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+
+    private async Task LogIn()
+    {
+        if (isProcessing)
+            return;
+
+        isProcessing = true;
+        statusMessage = null;
+        isError = false;
+
+        try
+        {
+            var result = await AccountManagement.LoginAsync(
+                login.Email,
+                login.Password);
+
+            if (!result.Succeeded)
+            {
+                statusMessage = string.Join(" ", result.ErrorList);
+                isError = true;
+                return;
+            }
+
+            Navigation.NavigateTo("/menu");
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+
+    private void ClearStatus()
+    {
+        statusMessage = null;
+        isError = false;
+    }
+
+    private sealed class LoginModel
+    {
+        [Required(ErrorMessage = "Wpisz adres e-mail.")]
+        [EmailAddress(ErrorMessage = "Wpisz poprawny adres e-mail.")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Wpisz hasło.")]
+        public string Password { get; set; } = string.Empty;
+    }
+
+    private sealed class RegistrationModel
+    {
+        [Required(ErrorMessage = "Wpisz adres e-mail.")]
+        [EmailAddress(ErrorMessage = "Wpisz poprawny adres e-mail.")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Wpisz hasło.")]
+        [MinLength(6, ErrorMessage = "Hasło musi mieć co najmniej 6 znaków.")]
+        public string Password { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Powtórz hasło.")]
+        [Compare(nameof(Password), ErrorMessage = "Hasła muszą być takie same.")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
+}

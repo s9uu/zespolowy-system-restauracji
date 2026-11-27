@@ -1,0 +1,275 @@
+﻿.account-page {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px 64px;
+    color: #292720;
+    background-color: #fff;
+    font-family: "Inter", sans-serif;
+}
+
+.introduction {
+    width: 100%;
+    max-width: 520px;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.eyebrow {
+    margin: 0 0 12px;
+    color: #a7462c;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+}
+
+.introduction h1 {
+    margin: 0 0 12px;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.lead {
+    margin: 0;
+    color: #77746b;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.account-panel {
+    width: 100%;
+    max-width: 460px;
+}
+
+.account-card {
+    padding: 32px;
+    border: 1px solid #e9e6df;
+    border-radius: 18px;
+    background-color: #fff;
+    box-shadow: 0 8px 30px rgba(41, 39, 32, 0.06);
+}
+
+.form-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 5px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    background-color: #f5f3ee;
+}
+
+.form-tab {
+    min-height: 42px;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #77746b;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .form-tab:hover {
+        color: #292720;
+    }
+
+    .form-tab.active {
+        background-color: #fff;
+        color: #a7462c;
+        box-shadow: 0 2px 6px rgba(41, 39, 32, 0.08);
+    }
+
+.form-intro {
+    margin-bottom: 26px;
+}
+
+    .form-intro h2 {
+        margin: 0 0 8px;
+        color: #292720;
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    .form-intro p {
+        margin: 0;
+        color: #77746b;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+.account-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .field label {
+        color: #292720;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+    .field input {
+        width: 100%;
+        min-height: 52px;
+        padding: 14px 16px;
+        border: 1px solid #e5e0d6;
+        border-radius: 11px;
+        outline: none;
+        background-color: #faf9f6;
+        color: #292720;
+        font-family: inherit;
+        font-size: 14px;
+        transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .field input::placeholder {
+            color: #aaa69c;
+            font-size: 13px;
+        }
+
+        .field input:hover {
+            border-color: #c9bfb1;
+            background-color: #fff;
+        }
+
+        .field input:focus {
+            border-color: #a7462c;
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(167, 70, 44, 0.10);
+        }
+
+        .field input:disabled {
+            background-color: #f1efe9;
+            cursor: not-allowed;
+        }
+
+.submit-button {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 9px;
+    background-color: #a7462c;
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+    .submit-button:hover {
+        background-color: #8f3823;
+    }
+
+    .submit-button:active {
+        transform: translateY(1px);
+    }
+
+    .submit-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+.status-message {
+    margin: 20px 0 0;
+    padding: 12px 14px;
+    border: 1px solid #ead1c8;
+    border-radius: 9px;
+    background-color: #fbf2ee;
+    color: #8f3823;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.field :global(.validation-message) {
+    color: #b42318;
+    font-size: 12px;
+}
+
+.password-hint {
+    margin: 2px 0 0;
+    color: #858176;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.status-message {
+    margin: 20px 0 0;
+    padding: 12px 14px;
+    border: 1px solid;
+    border-radius: 9px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+    .status-message.error {
+        border-color: #edc7c2;
+        background-color: #fbefed;
+        color: #a4382b;
+    }
+
+    .status-message.success {
+        border-color: #c9dfc9;
+        background-color: #eff7ef;
+        color: #356b3b;
+    }
+
+@media (max-width: 720px) {
+    .account-page {
+        min-height: calc(100vh - 60px);
+        padding: 36px 20px 48px;
+    }
+
+    .introduction h1 {
+        font-size: 28px;
+    }
+
+    .account-card {
+        padding: 28px 24px;
+    }
+}
+
+@media (max-width: 440px) {
+    .account-page {
+        padding: 28px 14px 40px;
+    }
+
+    .introduction {
+        margin-bottom: 24px;
+    }
+
+        .introduction h1 {
+            font-size: 25px;
+        }
+
+    .account-card {
+        padding: 24px 18px;
+        border-radius: 14px;
+    }
+
+    .form-intro h2 {
+        font-size: 20px;
+    }
+}
